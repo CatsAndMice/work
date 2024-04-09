@@ -1,0 +1,28 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "这个b班上的值不值"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "这个b班上的值不值",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#fff",
+		"usingComponents": {
+			"van-button": "/wxcomponents/vant/button/index",
+			"van-icon": "/wxcomponents/vant/icon/index",
+			"van-field": "/wxcomponents/vant/field/index",
+			"van-cell": "/wxcomponents/vant/cell/index",
+			"van-notify": "/wxcomponents/vant/notify/index",
+			"van-action-sheet": "/wxcomponents/vant/action-sheet/index",
+			"van-radio-group": "/wxcomponents/vant/radio-group/index",
+			"van-cell-group": "/wxcomponents/vant/cell-group/index",
+			"van-radio":"/wxcomponents/vant/radio/index",
+			"van-image": "/wxcomponents/vant/image/index"
+		}
+	}
+}

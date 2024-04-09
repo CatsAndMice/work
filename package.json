@@ -1,0 +1,32 @@
+{
+  "name": "uni-preset-vue",
+  "version": "0.0.0",
+  "scripts": {
+    "postinstall": "weapp-tw patch",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-4000820240401001",
+    "@dcloudio/uni-app-plus": "3.0.0-4000820240401001",
+    "@dcloudio/uni-components": "3.0.0-4000820240401001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-4000820240401001",
+    "@vant/weapp": "^1.11.4",
+    "lodash-es": "^4.17.21",
+    "vue": "^3.3.11",
+    "vue-i18n": "^9.1.9"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.3.2",
+    "@dcloudio/uni-automator": "3.0.0-4000820240401001",
+    "@dcloudio/uni-cli-shared": "3.0.0-4000820240401001",
+    "@dcloudio/uni-stacktracey": "3.0.0-4000820240401001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-4000820240401001",
+    "@vue/runtime-core": "^3.3.11",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "vite": "4.3.5",
+    "weapp-tailwindcss": "^3.1.1"
+  }
+}
