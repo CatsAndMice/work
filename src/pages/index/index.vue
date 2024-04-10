@@ -121,7 +121,39 @@
       </view>
     </block>
     <block v-if="eq(type, LOOK_RESULT)">
-      <view class="w-screen h-screen flex justify-center items-center flex-col">
+      <view class="text-center py-2 text-rose-600">请您分享给他(她)测测！</view>
+      <view class="py-2 bg-sky-200 text-center font-medium">工作性价比(计算参考)</view>
+      <view class="flex text-center justify-between relative items-center border-slate-500  border-t border-solid"
+        style="height: 30px;">
+        <view class="grow py-1">低于0.8</view>
+        <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
+        <view class="grow py-1">很惨!!</view>
+      </view>
+      <view class="flex text-center justify-between relative items-center border-slate-500  border-t border-solid"
+        style="height: 30px;">
+        <view class="grow py-1">高于1.5</view>
+        <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
+        <view class="grow py-1 ">很爽!!</view>
+      </view>
+      <view
+        class="flex text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
+        style="height: 30px;">
+        <view class="grow py-1">高于2.0</view>
+        <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
+        <view class="grow py-1">爽到爆!!</view>
+      </view>
+
+      <view class="py-2 bg-sky-200 mt-4 text-center font-medium ">本次工作性价比计算结果</view>
+      <view
+        class="mb-4 flex text-lg text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
+        style="height: 30px;">
+        <view class="grow py-1 text-red-500">{{ result }}</view>
+        <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
+        <view class="grow py-1 text-red-500">{{ getResultMessage(result) }}</view>
+      </view>
+      <van-button type="primary" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
+        @click="predStep" block>再测一次</van-button>
+      <!-- <view class="w-screen h-screen flex justify-center items-center flex-col">
         <view class="text-center text-4xl font-medium">这b班上的<span style="color: red;">{{ getResultMessage(result)
             }}</span> </view>
         <view class="text-center my-6 text-sm">工作性价比:{{ result }}</view>
@@ -130,8 +162,10 @@
           <van-image show-menu-by-longpress width="10rem" height="10rem" fit="contain"
             src="https://ywja-public-bucket.oss-cn-hangzhou.aliyuncs.com//server-platform/1/upload/2022-12-18/1671366140974.png" />
         </view>
-      </view>
+      </view> -->
     </block>
+
+    <!-- <view class="fixed bottom-4 left-2/4" style="transform: translateX(-50%);">联系作者</view> -->
   </view>
 </template>
 <script>
@@ -157,7 +191,7 @@ const WORK_EARNINGS = 'WORK_EARNINGS',
 
 export default {
   setup() {
-    const type = shallowRef(START)
+    const type = shallowRef(LOOK_RESULT)
     const result = shallowRef(0)
     const work = reactive({
       averageDailyFirewood: '',
