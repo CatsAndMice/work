@@ -145,14 +145,18 @@
 
       <view class="py-2 bg-sky-200 mt-4 text-center font-medium ">本次工作性价比计算结果</view>
       <view
-        class="mb-4 flex text-lg text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
+        class=" flex text-lg text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
         style="height: 30px;">
         <view class="grow py-1 text-red-500">{{ result }}</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
         <view class="grow py-1 text-red-500">{{ getResultMessage(result) }}</view>
       </view>
-      <van-button type="primary" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
-        @click="predStep" block>再测一次</van-button>
+      <view class="my-4">
+        <van-button type="primary" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
+          @click="predStep" block>再测一次</van-button>
+      </view>
+      <van-button open-type="share" type="default" block
+        custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);">分享给好友</van-button>
       <!-- <view class="w-screen h-screen flex justify-center items-center flex-col">
         <view class="text-center text-4xl font-medium">这b班上的<span style="color: red;">{{ getResultMessage(result)
             }}</span> </view>
@@ -169,8 +173,8 @@
   </view>
 </template>
 <script>
-import { shallowRef, reactive, toRaw, unref } from "vue"
-import { eq, each, isEmpty } from "lodash-es"
+import { shallowRef, reactive, toRaw, unref, toRefs } from "vue"
+import { eq, each, isEmpty, toNumber } from "lodash-es"
 import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes } from "./workEnvironment"
 import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
@@ -190,9 +194,20 @@ const WORK_EARNINGS = 'WORK_EARNINGS',
   }
 
 export default {
-  setup() {
-    const type = shallowRef(LOOK_RESULT)
-    const result = shallowRef(0)
+  props: {
+    resultProp: {
+      type: String,
+      default: '0'
+    },
+    typeProp: {
+      type: String,
+      default: START
+    }
+  },
+  setup(props) {
+    const { typeProp, resultProp } = toRefs(props)
+    const type = shallowRef(unref(typeProp))
+    const result = shallowRef(toNumber(unref(resultProp)))
     const work = reactive({
       averageDailyFirewood: '',
       workingHours: '',
@@ -255,19 +270,26 @@ export default {
     }
 
     const onShareAppMessage = () => {
+      let path = 'pages/index/index'
+      if (eq(unref(type), LOOK_RESULT)) {
+        path = `pages/index/index?resultProp=${unref(result)}&typeProp=${LOOK_RESULT}`
+      }
       return {
-        title: '这个b班上的值不值',
-        path: 'pages/index/index'
+        title: '我的工作性价比是??,快来测试您的工作性价比吧!',
+        path
       }
     }
 
     const onShareTimeline = () => {
+      let query = 'pages/index/index'
+      if (eq(unref(type), LOOK_RESULT)) {
+        query = `pages/index/index?resultProp=${unref(result)}&typeProp=${LOOK_RESULT}`
+      }
       return {
-        title: '这个b班上的值不值',
-        query: 'pages/index/index'
+        title: '我的工作性价比是??,快来测试您的工作性价比吧!',
+        query
       }
     }
-
 
     return {
       onShareTimeline,
