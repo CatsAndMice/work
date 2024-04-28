@@ -9,6 +9,6 @@ router.get('/healthcheck', (_req, res) => {
 
 app.use("/api", router);
 
-app.listen(3000, () => console.log("Server ready on port 3000."));
+app.listen(9090, () => console.log("Server ready on port 3000."));
 
 module.exports = app;
