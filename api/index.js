@@ -1,7 +1,13 @@
 const express = require("express");
+const { Router } = require('express')
 const app = express();
+const router = Router();
 
-app.get("/api", (req, res) => res.send("Express on Vercel"));
+router.get('/healthcheck', (_req, res) => {
+    res.status(200).json({ success: true, message: 'API is running' });
+})
+
+app.use("/api", router);
 
 app.listen(3000, () => console.log("Server ready on port 3000."));
 
