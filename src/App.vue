@@ -16,7 +16,5 @@ export default {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/*每个页面公共css */  
-/* @import "../wxcomponents/node_modules/@vant/weapp/dist/common/index.wxss"; */
 
 </style>

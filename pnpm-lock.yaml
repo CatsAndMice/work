@@ -29,6 +29,9 @@ dependencies:
   lodash-es:
     specifier: ^4.17.21
     version: 4.17.21
+  uni-ajax:
+    specifier: ^2.5.1
+    version: 2.5.1
   vue:
     specifier: ^3.3.11
     version: 3.4.21(typescript@4.9.5)
@@ -7195,6 +7198,10 @@ packages:
     engines: {node: '>=14.0'}
     dependencies:
       '@fastify/busboy': 2.1.1
+    dev: false
+
+  /uni-ajax@2.5.1:
+    resolution: {integrity: sha512-xmJY/yl5eRAb0b2qujTS1XNYhkSRWGL4PwkYqQrLpH2BMa2v/2zCJtqcTVUmqn4qQtdP3vLoFL86vaH3ABYAZA==}
     dev: false
 
   /unicode-canonical-property-names-ecmascript@2.0.0:

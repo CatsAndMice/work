@@ -11,7 +11,8 @@
       <view class="text-center text-4xl font-medium">这个b班上的值不值</view>
       <view class="text-center mt-6 text-sm">算算你的工作值不值，该跑路还是继续苟</view>
       <view class="text-center mb-6 mt-1 text-sm text-slate-400">算法来自知乎@拉拉拍皮球</view>
-      <van-button type="primary" custom-style="border-radius:0.5rem;" @click="startTest">开始测试</van-button>
+      <van-button type="primary" custom-style="border-radius:0.5rem;" @chooseavatar="chooseavatar"
+        open-type="chooseAvatar">开始测试</van-button>
     </block>
 
     <block v-if="eq(type, WORK_EARNINGS)">
@@ -157,19 +158,7 @@
       </view>
       <van-button open-type="share" type="default" block
         custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);">分享给好友</van-button>
-      <!-- <view class="w-screen h-screen flex justify-center items-center flex-col">
-        <view class="text-center text-4xl font-medium">这b班上的<span style="color: red;">{{ getResultMessage(result)
-            }}</span> </view>
-        <view class="text-center my-6 text-sm">工作性价比:{{ result }}</view>
-        <van-button type="primary" custom-style="border-radius:0.5rem;" @click="predStep">再测一次</van-button>
-        <view class="mt-6">
-          <van-image show-menu-by-longpress width="10rem" height="10rem" fit="contain"
-            src="https://ywja-public-bucket.oss-cn-hangzhou.aliyuncs.com//server-platform/1/upload/2022-12-18/1671366140974.png" />
-        </view>
-      </view> -->
     </block>
-
-    <!-- <view class="fixed bottom-4 left-2/4" style="transform: translateX(-50%);">联系作者</view> -->
   </view>
 </template>
 <script>
@@ -179,9 +168,9 @@ import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes
 import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
 import { getResultMessage } from "./getResultMessage"
-const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
+import { computedWork } from "@/api/work/work.js"
 
-console.log(Notify);
+const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
 const WORK_EARNINGS = 'WORK_EARNINGS',
   START = 'START',
   WORK_ENVIRONMENT = 'WORK_ENVIRONMENT',
@@ -206,6 +195,7 @@ export default {
   },
   setup(props) {
     const { typeProp, resultProp } = toRefs(props)
+    console.log(typeProp);
     const type = shallowRef(unref(typeProp))
     const result = shallowRef(toNumber(unref(resultProp)))
     const work = reactive({
@@ -230,6 +220,10 @@ export default {
 
     const startTest = (e) => {
       type.value = WORK_EARNINGS
+    }
+
+    const chooseavatar = (e) => {
+      console.log(e.detail);
     }
 
     const nextStep = () => {
@@ -266,6 +260,10 @@ export default {
         startWorkTime: unref(startWorkTimeSelectValue)
       }
       result.value = computeResult(actionSheet)
+      computedWork({
+        ...actionSheet,
+        result: unref(result)
+      })
       type.value = LOOK_RESULT
     }
 
@@ -292,6 +290,7 @@ export default {
     }
 
     return {
+      chooseavatar,
       onShareTimeline,
       onShareAppMessage,
       getResultMessage,
