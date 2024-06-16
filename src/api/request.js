@@ -1,6 +1,7 @@
 import ajax from 'uni-ajax'
 import { config } from './config.js'
 import toast from '@/utils/toast.js'
+import { eq } from "lodash-es"
 
 // 创建请求实例
 const instance = ajax.create({
@@ -46,28 +47,28 @@ instance.interceptors.response.use(
         if (response) {
             switch (Number(response[1])) {
                 case 404:
-                    failedToast('未发现该接口!')
+                    toast('未发现该接口!')
                     break
                 case 500:
-                    failedToast('未发现该接口!')
+                    toast('未发现该接口!')
                     break
                 case 502:
-                    failedToast('系统例行停机更新!')
+                    toast('系统例行停机更新!')
                     break
                 case 503:
-                    failedToast('系统发生故障，正在紧急排查中!')
+                    toast('系统发生故障，正在紧急排查中!')
                     break
                 default:
-                    failedToast(response.data.message)
+                    toast(response.data.message)
                     break
             }
         } else {
             uni.getNetworkType({
                 success: function (res) {
                     if (eq(res.networkType, 'none')) {
-                        failedToast('网络连接不可用,请检查网络!')
+                        toast('网络连接不可用,请检查网络!')
                     } else {
-                        failedToast('网络连接超时,请检查网络!')
+                        toast('网络连接超时,请检查网络!')
                     }
                 }
             })

@@ -13,8 +13,10 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-4000820240401001",
     "@vant/weapp": "^1.11.4",
     "@vercel/node": "^3.0.26",
+    "await-to-js": "^3.0.0",
     "express": "^4.19.2",
     "lodash-es": "^4.17.21",
+    "medash": "^3.4.1",
     "uni-ajax": "^2.5.1",
     "vue": "^3.3.11",
     "vue-i18n": "^9.1.9"

@@ -1,6 +1,8 @@
 <template>
     <view class="w-screen min-h-screen pb-4" style="background-color: #fafafa;">
-        <rank-item v-for="(a, index) in 99" :key="a" :index="index + 1" />
+
+        <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list" />
+        
     </view>
 
     <view @click="onClick" class="fixed right-4 bottom-8 rounded-full bg-white flex justify-center items-center"
@@ -12,33 +14,48 @@
 <script>
 import RankItem from '@/components/RankItem.vue';
 import EstimationImage from "@/static/estimation.png";
-import { onLoad } from "@dcloudio/uni-app"
-import { login } from "@/api/user/user.js"
+import { onLoad } from "@dcloudio/uni-app";
+import { login, getUserInfo } from "@/api/user/user.js";
+import { to } from "await-to-js";
+import Cache from "@/utils/cache.js";
+import useList from "@/common/useList.js";
+import { getWorkRanking } from "@/api/work/work.js"
 
 export default {
     components: {
         RankItem
     },
     setup() {
+        const { loading,
+            listRef,
+            getList } = useList(null, getWorkRanking)
+
         const onClick = () => {
             uni.navigateTo({
                 url: `/pages/index/index?typeProp=WORK_EARNINGS`
             })
         }
-
-
         onLoad(() => {
+            getList()
             uni.login({
                 provider: 'weixin', //使用微信登录
-                success: function (loginRes) {
-                    console.log(loginRes.code);
-                    login({ code: loginRes.code })
+                success: async function (loginRes) {
+                    const [err, data] = await to(login({ code: loginRes.code }))
+
+                    if (data) {
+                        const [userErr, userInfo = {}] = await to(getUserInfo(data.openid))
+                        Cache.set('userInfo', {
+                            ...userInfo,
+                            openId: data.openid
+                        })
+                    }
                 }
             });
         })
 
         return {
             onClick,
+            listRef,
             EstimationImage
         }
     },

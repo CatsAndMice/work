@@ -6,12 +6,16 @@
                 'second-image': eq(index, 2),
                 'third-image': eq(index, 3)
             }" style="border-color: #f87851;width: 76rpx;height: 76rpx;">
-                <van-image width="72rpx" lazy-load height="72rpx" round fit="cover"
-                    src="https://img.yzcdn.cn/vant/cat.jpeg" style="font-size: 0;" />
+                <van-image v-if="userWorkInfo.avatar" width="72rpx" lazy-load height="72rpx" round fit="cover"
+                    :src="userWorkInfo.avatar" />
+                <view v-else class="text-center text-white rounded-full"
+                    style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">
+                    {{ getLastName(userWorkInfo.user_name) }}
+                </view>
             </view>
             <view class="ml-2 ">
-                <view class="truncate " style="color: #333;max-width: 540rpx;">李海</view>
-                <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：2</view>
+                <view class="truncate " style="color: #333;max-width: 540rpx;">{{ userWorkInfo.user_name }}</view>
+                <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：{{ userWorkInfo.result }}</view>
             </view>
         </view>
         <view class="rank-num text-white text-center" :class="{
@@ -27,14 +31,24 @@ import { eq } from "lodash-es"
 
 export default {
     props: {
+        userWorkInfo: {
+            type: Object,
+            default: {}
+        },
         index: {
             type: Number,
-            default: 1
+            default: 0
         }
     },
     setup() {
+        const getLastName = (name = '') => {
+            const names = name.split('')
+            return names[names.length - 1]
+        }
+
         return {
-            eq
+            eq,
+            getLastName
         }
     },
 }
