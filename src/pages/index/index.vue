@@ -11,7 +11,7 @@
       <view class="text-center text-4xl font-medium">这个b班上的值不值</view>
       <view class="text-center mt-6 text-sm">算算你的工作值不值，该跑路还是继续苟</view>
       <view class="text-center mb-6 mt-1 text-sm text-slate-400">算法来自知乎@拉拉拍皮球</view>
-      <van-button type="primary" custom-style="border-radius:0.5rem;" @chooseavatar="chooseavatar"
+      <van-button type="info" custom-style="border-radius:0.5rem;" @chooseavatar="chooseavatar"
         open-type="chooseAvatar">开始测试</van-button>
     </block>
 
@@ -42,7 +42,7 @@
             custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;" :border="false" type="digit" />
         </view>
 
-        <van-button type="primary" @click="nextStep" custom-style="border-radius:0.5rem;" block>下一步</van-button>
+        <van-button type="info" @click="nextStep" custom-style="border-radius:0.5rem;" block>下一步</van-button>
 
         <!-- 在页面内添加对应的节点 -->
         <van-notify id="van-notify" />
@@ -116,7 +116,7 @@
         <view class="flex my-4">
           <van-button type="default" custom-style="border-radius:0.5rem;" @click="predStep">上一步</van-button>
           <view class="rounded-lg overflow-hidden ml-2 grow">
-            <van-button type="primary" block @click="onLookResult">查看结果</van-button>
+            <van-button type="info" block @click="onLookResult">查看结果</van-button>
           </view>
         </view>
       </view>
@@ -153,7 +153,7 @@
         <view class="grow py-1 text-red-500">{{ getResultMessage(result) }}</view>
       </view>
       <view class="my-4">
-        <van-button type="primary" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
+        <van-button type="info" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
           @click="predStep" block>再测一次</van-button>
       </view>
       <van-button open-type="share" type="default" block
@@ -169,7 +169,7 @@ import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
 import { getResultMessage } from "./getResultMessage"
 import { computedWork } from "@/api/work/work.js"
-
+import { to } from "await-to-js"
 const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
 const WORK_EARNINGS = 'WORK_EARNINGS',
   START = 'START',
@@ -249,7 +249,7 @@ export default {
       type.value = WORK_EARNINGS
     }
 
-    const onLookResult = () => {
+    const onLookResult = async () => {
       const actionSheet = {
         ...toRaw(work),
         qualification: unref(selectValue),
@@ -260,11 +260,13 @@ export default {
         startWorkTime: unref(startWorkTimeSelectValue)
       }
       result.value = computeResult(actionSheet)
-      computedWork({
+      type.value = LOOK_RESULT
+
+      await to(computedWork({
         ...actionSheet,
         result: unref(result)
-      })
-      type.value = LOOK_RESULT
+      }))
+      uni.$emit('updateWorkRanking')
     }
 
     const onShareAppMessage = () => {

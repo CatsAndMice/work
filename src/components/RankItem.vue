@@ -24,7 +24,7 @@
                 'third': eq(index, 3)
             }">{{ index }}</view>
     </view>
-    <view class="mx-4"> <van-divider custom-style="margin:0;" /></view>
+    <view class="mx-4" v-show="isDivider"> <van-divider custom-style="margin:0;" /></view>
 </template>
 <script>
 import { eq } from "lodash-es"
@@ -38,6 +38,10 @@ export default {
         index: {
             type: Number,
             default: 0
+        },
+        isDivider: {
+            type: Boolean,
+            default: true
         }
     },
     setup() {
