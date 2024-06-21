@@ -1,33 +1,36 @@
 <template>
-    <view class="p-4 flex items-center justify-between">
-        <view class="flex justify-center items-center">
-            <view class="relative  border-2 border-solid rounded-full inline-flex justify-center items-center" :class="{
-                'first-image': eq(index, 1),
-                'second-image': eq(index, 2),
-                'third-image': eq(index, 3)
-            }" style="border-color: #f87851;width: 76rpx;height: 76rpx;">
-                <van-image v-if="userWorkInfo.avatar" width="72rpx" lazy-load height="72rpx" round fit="cover"
-                    :src="userWorkInfo.avatar" />
-                <view v-else class="text-center text-white rounded-full"
-                    style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">
-                    {{ getLastName(userWorkInfo.user_name) }}
+    <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg shadow-sm relative">
+        <view class="rank-num text-white text-center mr-2" :class="{
+            'first': eq(index, 1),
+            'second': eq(index, 2),
+            'third': eq(index, 3)
+        }">{{ index }}</view>
+        <view class="grow flex items-center justify-between">
+            <view class="flex items-center grow">
+                <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
+                    style="width: 76rpx;height: 76rpx;">
+                    <van-image v-if="userWorkInfo.avatar" width="72rpx" lazy-load height="72rpx" fit="cover"
+                        :src="userWorkInfo.avatar" />
+                    <view v-else class="text-center text-white "
+                        style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">
+                        {{ getLastName(userWorkInfo.user_name) }}
+                    </view>
+                </view>
+                <view class="ml-2 ">
+                    <view class="truncate " style="color: #333;max-width: 540rpx;">{{ userWorkInfo.user_name }}</view>
+                    <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：{{ userWorkInfo.result }}</view>
                 </view>
             </view>
-            <view class="ml-2 ">
-                <view class="truncate " style="color: #333;max-width: 540rpx;">{{ userWorkInfo.user_name }}</view>
-                <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：{{ userWorkInfo.result }}</view>
-            </view>
+            <view :class="['font-medium text-lg', gte(userWorkInfo.result, 1.5) ? 'text-orange-500' : 'text-sky-500']">
+                {{
+            getResultMessage(userWorkInfo.result) }}</view>
         </view>
-        <view class="rank-num text-white text-center" :class="{
-                'first': eq(index, 1),
-                'second': eq(index, 2),
-                'third': eq(index, 3)
-            }">{{ index }}</view>
+        <view v-show="isDivider" class="absolute bottom-0 right-0" style="width: calc(100vw - 84rpx);"><van-divider customStyle="margin:0;" /></view>
     </view>
-    <view class="mx-4" v-show="isDivider"> <van-divider custom-style="margin:0;" /></view>
 </template>
 <script>
-import { eq } from "lodash-es"
+import { eq, gte } from "lodash-es"
+import { getResultMessage } from "@/pages/index/getResultMessage"
 
 export default {
     props: {
@@ -52,53 +55,14 @@ export default {
 
         return {
             eq,
-            getLastName
+            getResultMessage,
+            getLastName,
+            gte
         }
     },
 }
 </script>
 <style lang="css" scoped>
-.first-image::before {
-    content: "";
-    position: absolute;
-    background-position: -115px -44px;
-    background-image: url('@/static/icon-body.png');
-    width: 40rpx;
-    height: 40rpx;
-    top: 0;
-    margin-top: -20rpx;
-    z-index: 1;
-    left: 52rpx;
-}
-
-.second-image::before {
-    content: "";
-    position: absolute;
-    background-position: -115px -66px;
-    background-image: url('@/static/icon-body.png');
-    width: 40rpx;
-    height: 40rpx;
-    top: 0;
-    margin-top: -20rpx;
-    z-index: 1;
-    left: 52rpx;
-}
-
-
-.third-image::before {
-    content: "";
-    position: absolute;
-    background-position: -115px -88px;
-    background-image: url('@/static/icon-body.png');
-    width: 40rpx;
-    height: 40rpx;
-    top: 0;
-    margin-top: -20rpx;
-    z-index: 1;
-    left: 52rpx;
-}
-
-
 .rank-num {
     font-size: 24rpx;
     line-height: 50rpx;

@@ -1,11 +1,5 @@
-const baseURLMap = {
-    dev: 'http://localhost:9000',
-    prod: 'https://'
-}
+import { eq } from "lodash-es"
 
-// console.log(process.env.UNI_NODE_ENV);
-// const baseURL = baseURLMap[process.env.UNI_NODE_ENV]
-
-export const config =  {
-    baseURL: 'http://localhost:9000'
+export const config = {
+    baseURL: eq(process.env.NODE_ENV, 'production') ? 'https://work.linglan01.cn' : 'https://work.linglan01.cn'
 }

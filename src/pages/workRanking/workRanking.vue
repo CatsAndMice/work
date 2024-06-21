@@ -2,17 +2,21 @@
     <view class="w-screen min-h-screen pb-4 relative" style="background-color: #fafafa;">
         <van-skeleton row="1" class="skeleton" :animate="true" :loading="loading">
             <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list"
-                :is-divider="!eq(listRef.length - 1, index)" :is-first="index == 0"
-                :is-last="index == listRef.length - 1" />
+                :is-divider="!eq(listRef.length - 1, index)" />
         </van-skeleton>
 
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
 
-    <view @click="onClick" class="fixed right-4 bottom-8 rounded-full bg-white flex justify-center items-center"
+    <!-- <view 
         style="width: 100rpx;height: 100rpx;box-shadow: 0 8px 15px rgba(0, 0, 0, .2);">
-        <van-image width="60rpx" height="60rpx" fit="cover" style="font-size: 0;" :src="EstimationImage" />
-    </view>
+       
+    </view> -->
+    <van-button @click="onClick" round icon="records"
+        class="fixed right-4 bottom-10 rounded-full bg-white flex justify-center items-center" type="info">
+        测一测
+    </van-button>
+
 
 </template>
 <script>
@@ -25,6 +29,8 @@ import Cache from "@/utils/cache.js";
 import useList from "@/common/useList.js";
 import { getWorkRanking } from "@/api/work/work.js"
 import { eq, isEmpty } from "lodash-es"
+import images from "@/utils/images.json"
+console.log(images);
 export default {
     components: {
         RankItem

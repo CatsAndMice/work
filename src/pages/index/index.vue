@@ -73,7 +73,7 @@
           <van-action-sheet :actions="oppositeSex" :show="oppositeSexShow" @close="oppositeSexClose"
             @select="oppositeSexSelect" @cancel="oppositeSexClose" cancel-text="取消" />
           <view class="rounded-lg overflow-hidden" style="border:1px solid rgb(203 213 225);"> <van-cell
-              :title="oppositeSexSelectName" :border="false" is-link @click="workEnvOpen" /></view>
+              :title="oppositeSexSelectName" :border="false" is-link @click="oppositeSexOpen" /></view>
         </view>
 
 
@@ -195,7 +195,6 @@ export default {
   },
   setup(props) {
     const { typeProp, resultProp } = toRefs(props)
-    console.log(typeProp);
     const type = shallowRef(unref(typeProp))
     const result = shallowRef(toNumber(unref(resultProp)))
     const work = reactive({
@@ -300,7 +299,11 @@ export default {
       onLookResult,
       predStep,
       qualifications,
-      workEnv, oppositeSex, ditto, occupation, startWorkTimes,
+      workEnv,
+      oppositeSex,
+      ditto,
+      occupation,
+      startWorkTimes,
       type,
       work,
       WORK_EARNINGS,
