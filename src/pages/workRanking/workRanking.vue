@@ -1,23 +1,24 @@
 <template>
-    <view class="w-screen min-h-screen pb-4 relative" style="background-color: #fafafa;">
-        <van-skeleton row="1" class="skeleton" :animate="true" :loading="loading">
-            <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list"
-                :is-divider="!eq(listRef.length - 1, index)" />
-        </van-skeleton>
+    <view class="w-screen min-h-screen pb-4 relative bg-white">
+        <view v-show="loading" class="absolute w-screen flex justify-center items-center bg-white"
+            style="height: 100%;z-index: 1;">
+            <van-loading color="#1989fa" size="24px" vertical>
+                <text style="color:#1989fa;">加载中...</text>
+            </van-loading>
+        </view>
+        <!-- 本人 -->
+        <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list"
+            :is-divider="!eq(listRef.length - 1, index)" />
+        <view class="h-4" style="background-color: #fafafa;"></view>
 
+        <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list"
+            :is-divider="!eq(listRef.length - 1, index)" />
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
-
-    <!-- <view 
-        style="width: 100rpx;height: 100rpx;box-shadow: 0 8px 15px rgba(0, 0, 0, .2);">
-       
-    </view> -->
     <van-button @click="onClick" round icon="records"
         class="fixed right-4 bottom-10 rounded-full bg-white flex justify-center items-center" type="info">
         测一测
     </van-button>
-
-
 </template>
 <script>
 import RankItem from '@/components/RankItem.vue';

@@ -1,5 +1,5 @@
 <template>
-    <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg shadow-sm relative">
+    <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg  relative">
         <view class="rank-num text-white text-center mr-2" :class="{
             'first': eq(index, 1),
             'second': eq(index, 2),
