@@ -11,7 +11,6 @@ export default (query, cb) => {
         loading.value = true
         const requestQuery = params ? params : query;
         const result = cb(requestQuery)
-        console.log(result);
         if (isPromise(result)) {
             result.then(r => {
                 console.log(r,111);

@@ -17,7 +17,11 @@
                     </view>
                 </view>
                 <view class="ml-2 ">
-                    <view class="truncate " style="color: #333;max-width: 540rpx;">{{ userWorkInfo.user_name }}</view>
+                    <view class="truncate " style="color: #333;max-width: 540rpx;">
+                        <slot>
+                            {{ userWorkInfo.user_name }}
+                        </slot>
+                    </view>
                     <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：{{ userWorkInfo.result }}</view>
                 </view>
             </view>
@@ -25,12 +29,14 @@
                 {{
             getResultMessage(userWorkInfo.result) }}</view>
         </view>
-        <view v-show="isDivider" class="absolute bottom-0 right-0" style="width: calc(100vw - 84rpx);"><van-divider customStyle="margin:0;" /></view>
+        <view v-show="isDivider" class="absolute bottom-0 right-0" style="width: calc(100vw - 84rpx);"><van-divider
+                customStyle="margin:0;" /></view>
     </view>
 </template>
 <script>
 import { eq, gte } from "lodash-es"
 import { getResultMessage } from "@/pages/index/getResultMessage"
+import getLastName from "@/utils/getLastName"
 
 export default {
     props: {
@@ -48,10 +54,6 @@ export default {
         }
     },
     setup() {
-        const getLastName = (name = '') => {
-            const names = name.split('')
-            return names[names.length - 1]
-        }
 
         return {
             eq,
