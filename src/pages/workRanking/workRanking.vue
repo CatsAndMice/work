@@ -10,17 +10,15 @@
         <view v-show="!isEmpty(firstUser)" class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
             backgroundImage: `url(${image})`
         }">
-
-
-
-<!-- 
-            <view v-show="loading" class="absolute w-screen flex justify-center items-center bg-white"
+            <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
                 style="height: 100%;z-index: 1;">
-                <van-loading color="#1989fa" size="24px" vertical>
-                    <text style="color:#1989fa;">加载中...</text>
-                </van-loading>
-            </view> -->
-
+                <van-image width="100vw" lazy-load height="15rem" fit="cover" @load="isLoadingHeader = false"
+                    :src="image" use-loading-slot>
+                    <template #loading>
+                        <van-loading color="#1989fa" />
+                    </template>
+                </van-image>
+            </view>
 
             <view class="text-white font-semibold text-xl p-4 pb-2">{{ getYmd() }}</view>
             <view class="text-white pl-4">
@@ -38,13 +36,21 @@
         </view>
         <!-- 本人 -->
         <view v-show="!isEmpty(selfUser)">
-            <rank-item :index="selfUser.index + 1" :user-work-info="selfUser" :is-divider="false">
+            <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false">
                 {{ selfUser.user_name + '(我)' || '' }}
+            </rank-item>
+            <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false">
+                {{ selfUser.user_name + '(我)' || '' }}
+                <template #right>
+                    <van-button @click="onClick" round class="rounded-full bg-white flex" type="info" size="small">
+                        测一测
+                    </van-button>
+                </template>
             </rank-item>
             <view class="h-4" style="background-color: #fafafa;"></view>
         </view>
 
-        <rank-item v-for="(list, index) in listRef" :index="index + 1" :key="list.open_id" :user-work-info="list"
+        <rank-item v-for="(list, index) in listRef" :index="list.ranking" :key="list.open_id" :user-work-info="list"
             :is-divider="!eq(listRef.length - 1, index)" />
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
@@ -62,7 +68,7 @@ import { to } from "await-to-js";
 import Cache from "@/utils/cache.js";
 import useList from "@/common/useList.js";
 import { getWorkRanking } from "@/api/work/work.js"
-import { eq, isEmpty } from "lodash-es"
+import { eq, isEmpty, gte, isUndefined } from "lodash-es"
 import images from "@/utils/images.json"
 import { shallowRef, unref } from 'vue';
 import getLastName from "@/utils/getLastName"
@@ -74,7 +80,7 @@ export default {
     setup() {
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
-
+        const isLoadingHeader = shallowRef(true)
         const { loading,
             listRef,
             getList } = useList(null, async () => {
@@ -110,28 +116,37 @@ export default {
                 i = index
                 return isEq
             })
-            console.log(selfUser);
-            return { ...unref(selfUser), index: i }
+            return unref(selfUser)
         }
 
         onLoad(() => {
             uni.$off('updateWorkRanking')
-            uni.$on('updateWorkRanking', () => getList(null, () => {
-                const userInfo = Cache.get('userInfo')
-                selfUser.value = getSelfUser(userInfo.openId, unref(listRef))
-            }))
+            const getUserInfoFn = async () => {
+                const data = Cache.get('openId')
+                const [userErr, userInfo = {}] = await to(getUserInfo(data.openId))
+                if (!isUndefined(userInfo.result)) {
+                    const work = unref(listRef).find(l => {
+                        return gte(userInfo.result, l.result)
+                    })
+                    userInfo.ranking = work.ranking
+                }
+                selfUser.value = userInfo
+                Cache.set('userInfo', {
+                    ...userInfo,
+                    openId: data.openid
+                })
+            }
+            uni.$on('updateWorkRanking', () => getList(null, getUserInfoFn))
             getList(null, () => {
                 uni.login({
                     provider: 'weixin', //使用微信登录
                     success: async function (loginRes) {
                         const [err, data] = await to(login({ code: loginRes.code }))
                         if (data) {
-                            const [userErr, userInfo = {}] = await to(getUserInfo(data.openid))
-                            selfUser.value = getSelfUser(data.openid, unref(listRef))
-                            Cache.set('userInfo', {
-                                ...userInfo,
+                            Cache.set('openId', {
                                 openId: data.openid
                             })
+                            getUserInfoFn()
                         }
                     }
                 });
@@ -139,6 +154,7 @@ export default {
         })
 
         return {
+            isLoadingHeader,
             firstUser,
             getYmd,
             isEmpty,

@@ -1,9 +1,9 @@
 <template>
     <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg  relative">
         <view class="rank-num text-white text-center mr-2" :class="{
-            'first': eq(index, 1),
-            'second': eq(index, 2),
-            'third': eq(index, 3)
+            'first': index == 1,
+            'second': index == 2,
+            'third': index == 3
         }">{{ index }}</view>
         <view class="grow flex items-center justify-between">
             <view class="flex items-center grow">
@@ -22,19 +22,24 @@
                             {{ userWorkInfo.user_name }}
                         </slot>
                     </view>
-                    <view class="text-xs mt-0.5" style="color: #a3a3a3;">工作性价比：{{ userWorkInfo.result }}</view>
+                    <view class="text-xs mt-0.5" style="color: #a3a3a3;">
+                        工作性价比：{{ isUndefined(userWorkInfo.result) ? '-' : userWorkInfo.result }}</view>
                 </view>
             </view>
-            <view :class="['font-medium text-lg', gte(userWorkInfo.result, 1.5) ? 'text-orange-500' : 'text-sky-500']">
-                {{
+            <slot name="right">
+                <view
+                    :class="['font-medium text-lg', gte(userWorkInfo.result, 1.5) ? 'text-orange-500' : 'text-sky-500']">
+                    {{
             getResultMessage(userWorkInfo.result) }}</view>
+            </slot>
+
         </view>
         <view v-show="isDivider" class="absolute bottom-0 right-0" style="width: calc(100vw - 84rpx);"><van-divider
                 customStyle="margin:0;" /></view>
     </view>
 </template>
 <script>
-import { eq, gte } from "lodash-es"
+import { eq, gte, isUndefined } from "lodash-es"
 import { getResultMessage } from "@/pages/index/getResultMessage"
 import getLastName from "@/utils/getLastName"
 
@@ -45,7 +50,7 @@ export default {
             default: {}
         },
         index: {
-            type: Number,
+            type: [Number, String],
             default: 0
         },
         isDivider: {
@@ -59,7 +64,8 @@ export default {
             eq,
             getResultMessage,
             getLastName,
-            gte
+            gte,
+            isUndefined
         }
     },
 }
