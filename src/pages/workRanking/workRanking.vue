@@ -11,8 +11,8 @@
         }">
             <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
                 style="height: 100%;z-index: 1;">
-                <van-image width="100vw" lazy-load height="15rem" fit="cover" @load="isLoadingHeader = false"
-                    :src="image" use-loading-slot>
+                <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false" @error="onError" :src="image"
+                    use-loading-slot>
                     <template #loading>
                         <van-loading color="#1989fa" />
                     </template>
@@ -22,7 +22,7 @@
             <view class="text-white font-semibold text-xl p-4 pb-2">{{ getYmd() }}</view>
             <view class="text-white pl-4">
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center">
-                    <van-image v-if="firstUser.avatar" width="60rpx" lazy-load height="60rpx" fit="cover"
+                    <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" fit="cover"
                         :src="firstUser.avatar">
                     </van-image>
                     <view v-else class="text-center text-white "
@@ -71,7 +71,7 @@ import { eq, isEmpty, gte, isUndefined } from "lodash-es"
 import images from "@/utils/images.json"
 import { shallowRef, unref } from 'vue';
 import getLastName from "@/utils/getLastName"
-
+import lastImage from '@/static/last.jpg'
 export default {
     components: {
         RankItem
@@ -80,6 +80,12 @@ export default {
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
         const isLoadingHeader = shallowRef(true)
+        const randomInt = (min, max) => {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        const image = shallowRef(images[randomInt(0, images.length - 1)])
         const { loading,
             listRef,
             getList } = useList(null, async () => {
@@ -92,12 +98,6 @@ export default {
             uni.navigateTo({
                 url: `/pages/index/index?typeProp=WORK_EARNINGS`
             })
-        }
-
-        const randomInt = (min, max) => {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
         const getYmd = () => {
@@ -157,7 +157,13 @@ export default {
                 query
             }
         }
+
+        const onError = () => {
+            image.value = lastImage
+            isLoadingHeader.value = false
+        }
         return {
+            onError,
             onShareAppMessage,
             onShareTimeline,
             isLoadingHeader,
@@ -171,7 +177,7 @@ export default {
             listRef,
             EstimationImage,
             getLastName,
-            image: images[randomInt(0, images.length - 1)]
+            image
         }
     },
 }
