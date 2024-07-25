@@ -158,6 +158,7 @@
       </view>
       <van-button open-type="share" type="default" block
         custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);">分享给好友</van-button>
+      <van-image fit="widthFix" show-menu-by-longpress width="100vw" class="pb-3" :src="equationImage" />
     </block>
   </view>
 </template>
@@ -169,6 +170,7 @@ import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
 import { getResultMessage } from "./getResultMessage"
 import { computedWork } from "@/api/work/work.js"
+import equationImage from '../../static/equation.png'
 import { to } from "await-to-js"
 const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
 const WORK_EARNINGS = 'WORK_EARNINGS',
@@ -291,6 +293,7 @@ export default {
     }
 
     return {
+      equationImage,
       chooseavatar,
       onShareTimeline,
       onShareAppMessage,

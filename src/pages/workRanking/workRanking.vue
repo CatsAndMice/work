@@ -6,7 +6,6 @@
                 <text style="color:#1989fa;">加载中...</text>
             </van-loading>
         </view>
-
         <view v-show="!isEmpty(firstUser)" class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
             backgroundImage: `url(${image})`
         }">
@@ -109,16 +108,6 @@ export default {
             return `${year}年${month}月${day}日`
         }
 
-        const getSelfUser = (openId, data = []) => {
-            let i = 0
-            const selfUser = data.find((item, index) => {
-                const isEq = item.open_id == openId
-                i = index
-                return isEq
-            })
-            return unref(selfUser)
-        }
-
         onLoad(() => {
             uni.$off('updateWorkRanking')
             const getUserInfoFn = async () => {
@@ -133,7 +122,7 @@ export default {
                 selfUser.value = userInfo
                 Cache.set('userInfo', {
                     ...userInfo,
-                    openId: data.openid
+                    openId: data.openId
                 })
             }
             uni.$on('updateWorkRanking', () => getList(null, getUserInfoFn))
@@ -153,7 +142,24 @@ export default {
             })
         })
 
+        const onShareAppMessage = () => {
+            let path = 'pages/workRanking/workRanking'
+            return {
+                title: '工作性价比排行榜',
+                path
+            }
+        }
+
+        const onShareTimeline = () => {
+            let query = 'pages/workRanking/workRanking'
+            return {
+                title: '工作性价比排行榜',
+                query
+            }
+        }
         return {
+            onShareAppMessage,
+            onShareTimeline,
             isLoadingHeader,
             firstUser,
             getYmd,

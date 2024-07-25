@@ -9,6 +9,6 @@ export const getResultMessage = (result) => {
     } else if (unrefResult <= 2) {
         return "很爽!!"
     } else {
-        return "爽到爆!!"
+        return "爽爆炸!!"
     }
 }
