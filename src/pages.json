@@ -9,9 +9,9 @@
 			}
 		},
 		{
-			"path": "pages/mePage/mePage",
+			"path": "pages/workDetail/workDetail",
 			"style": {
-				"navigationBarTitleText": "我的工作性价比",
+				"navigationBarTitleText": "工作性价比明细",
 				"navigationBarBackgroundColor": "#397bee",
 				"navigationBarTextStyle": "white"
 			}

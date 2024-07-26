@@ -11,8 +11,8 @@
         }">
             <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
                 style="height: 100%;z-index: 1;">
-                <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false" @error="onError" :src="image"
-                    use-loading-slot>
+                <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false"
+                    @error="onError" :src="image" use-loading-slot>
                     <template #loading>
                         <van-loading color="#1989fa" />
                     </template>
@@ -35,10 +35,11 @@
         </view>
         <!-- 本人 -->
         <view v-show="!isEmpty(selfUser)">
-            <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false">
+            <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false"
+                @rank-click="onRankClick">
                 {{ selfUser.user_name + '(我)' || '' }}
             </rank-item>
-            <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false">
+            <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
                 {{ selfUser.user_name + '(我)' || '' }}
                 <template #right>
                     <van-button @click="onClick" round class="rounded-full bg-white flex" type="info" size="small">
@@ -50,7 +51,7 @@
         </view>
 
         <rank-item v-for="(list, index) in listRef" :index="list.ranking" :key="list.open_id" :user-work-info="list"
-            :is-divider="!eq(listRef.length - 1, index)" />
+            :is-divider="!eq(listRef.length - 1, index)" @rank-click="onRankClick" />
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
     <van-button @click="onClick" round icon="records"
@@ -60,7 +61,6 @@
 </template>
 <script>
 import RankItem from '@/components/RankItem.vue';
-import EstimationImage from "@/static/estimation.png";
 import { onLoad } from "@dcloudio/uni-app";
 import { login, getUserInfo } from "@/api/user/user.js";
 import { to } from "await-to-js";
@@ -69,9 +69,11 @@ import useList from "@/common/useList.js";
 import { getWorkRanking } from "@/api/work/work.js"
 import { eq, isEmpty, gte, isUndefined } from "lodash-es"
 import images from "@/utils/images.json"
-import { shallowRef, unref } from 'vue';
-import getLastName from "@/utils/getLastName"
-import lastImage from '@/static/last.jpg'
+import { shallowRef, toRaw, unref } from 'vue';
+import getLastName from "@/utils/getLastName";
+import {randomInt} from "@/utils/randomInt.js"
+import lastImage from '@/static/last.jpg';
+
 export default {
     components: {
         RankItem
@@ -80,11 +82,6 @@ export default {
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
         const isLoadingHeader = shallowRef(true)
-        const randomInt = (min, max) => {
-            min = Math.ceil(min);
-            max = Math.floor(max);
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
         const image = shallowRef(images[randomInt(0, images.length - 1)])
         const { loading,
             listRef,
@@ -158,11 +155,20 @@ export default {
             }
         }
 
+        const onRankClick = (userDetail) => {
+            const rowUserDetail = toRaw(userDetail)
+            Cache.set('userDetail', rowUserDetail)
+            uni.navigateTo({
+                url: `/pages/workDetail/workDetail`
+            })
+        }
+
         const onError = () => {
             image.value = lastImage
             isLoadingHeader.value = false
         }
         return {
+            onRankClick,
             onError,
             onShareAppMessage,
             onShareTimeline,
@@ -175,7 +181,6 @@ export default {
             selfUser,
             onClick,
             listRef,
-            EstimationImage,
             getLastName,
             image
         }

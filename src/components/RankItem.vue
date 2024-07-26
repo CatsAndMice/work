@@ -1,10 +1,10 @@
 <template>
-    <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg  relative">
+    <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg  relative" @click="onClick">
         <view class="rank-num text-white text-center mr-2" :class="{
-            'first': index == 1,
-            'second': index == 2,
-            'third': index == 3
-        }">{{ index }}</view>
+        'first': index == 1,
+        'second': index == 2,
+        'third': index == 3
+    }">{{ index }}</view>
         <view class="grow flex items-center justify-between">
             <view class="flex items-center grow">
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
@@ -27,10 +27,13 @@
                 </view>
             </view>
             <slot name="right">
-                <view
-                    :class="['font-medium text-lg', gte(userWorkInfo.result, 1.5) ? 'text-orange-500' : 'text-sky-500']">
-                    {{
-            getResultMessage(userWorkInfo.result) }}</view>
+                <view class="flex items-center">
+                    <text
+                        :class="['font-medium text-lg', gte(userWorkInfo.result, 1.5) ? 'text-orange-500' : 'text-sky-500']">
+                        {{ getResultMessage(userWorkInfo.result) }}
+                    </text>
+                    <van-icon v-if="isClick" name="arrow" class="text-slate-300  ml-2" size="20px" />
+                </view>
             </slot>
 
         </view>
@@ -42,6 +45,7 @@
 import { eq, gte, isUndefined } from "lodash-es"
 import { getResultMessage } from "@/pages/index/getResultMessage"
 import getLastName from "@/utils/getLastName"
+import { toRefs, unref } from 'vue'
 
 export default {
     props: {
@@ -56,11 +60,24 @@ export default {
         isDivider: {
             type: Boolean,
             default: true
+        },
+        isClick: {
+            type: Boolean,
+            default: true
         }
     },
-    setup() {
+    emits: ['rank-click'],
+    setup(props, { emit }) {
+        const { isClick, userWorkInfo } = toRefs(props)
+        const onClick = () => {
+            const unrefIsClick = unref(isClick)
+            if (unrefIsClick) {
+                emit('rank-click', unref(userWorkInfo))
+            }
+        }
 
         return {
+            onClick,
             eq,
             getResultMessage,
             getLastName,

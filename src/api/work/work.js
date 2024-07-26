@@ -16,3 +16,11 @@ export const getWorkRanking = async () => {
    return []
 }
 
+export const getWorkExceed = async (result) => {
+   const data = await request.get(`/api/wechat/exceed?result=${result}`)
+   if (data && eq(data.code, 200)) {
+      return data.data
+   }
+   return 0
+}
+
