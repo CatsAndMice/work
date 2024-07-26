@@ -14,7 +14,7 @@
             </view>
         </view>
         <view v-if="!isEmpty(userDetail)" class="relative p-4 ">
-            <view class="flex items-center absolute right-4" style="top: -70rpx;">
+            <view v-show="!isLoadingHeader" class="flex items-center absolute right-4" style="top: -70rpx;">
                 <view class="pb-4 mr-4 text-white text-xl">{{ userDetail.user_name }}</view>
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
                     style="width: 100rpx;height: 100rpx;">
@@ -32,7 +32,9 @@
                 <view class="flex items-center">
                     <van-icon name="flag-o" size="50rpx" class="mr-2" style="color: rgb(51, 150, 251); " />
                     <view class="flex items-center">
-                        <view>性价比排行第<text class="text-lg text-red-500 mx-1"> {{ userDetail.ranking }} </text>位</view>
+                        <view v-if="userDetail.ranking > 100">未上榜😮‍💨</view>
+                        <view v-else>性价比排行第<text class="text-lg text-red-500 mx-1"> {{ userDetail.ranking }} </text>位
+                        </view>
                     </view>
                 </view>
                 <view class="text-sm">超过<text class="text-lg text-red-500 mx-1"> {{ exceed + '%' }} </text>人</view>
@@ -169,7 +171,7 @@ export default {
             if (!isEmpty(userDetail)) {
                 const [err, result] = await to(getWorkExceed(userDetail.result))
                 if (result) {
-                    exceed.value = result
+                    exceed.value = eq(result, 100) ? 99.99 : result
                 }
             }
         })
