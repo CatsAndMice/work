@@ -1,12 +1,12 @@
 <template>
     <view class="bg-slate-50 min-h-screen">
         <view class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
-            backgroundImage: `url(${image})`
+            backgroundImage: `url(${getImage(image)})`
         }">
             <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
                 style="height: 100%;z-index: 1;">
                 <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false"
-                    @error="onError" :src="image" use-loading-slot>
+                    @error="onError" :src="getImage(image)" use-loading-slot>
                     <template #loading>
                         <van-loading color="#1989fa" />
                     </template>
@@ -149,6 +149,7 @@ import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes
 import { getWorkExceed } from "@/api/work/work.js"
 import { onBeforeMount } from "vue"
 import { to } from "await-to-js";
+import getImage from "@/pages/workRanking/js/getImage"
 export default {
     setup() {
         const isLoadingHeader = shallowRef(true)
@@ -192,7 +193,8 @@ export default {
             qualifications,
             oppositeSex,
             ditto,
-            startWorkTimes
+            startWorkTimes,
+            getImage
         }
     },
 }

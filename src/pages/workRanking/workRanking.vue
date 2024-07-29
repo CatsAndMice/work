@@ -7,12 +7,12 @@
             </van-loading>
         </view>
         <view v-show="!isEmpty(firstUser)" class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
-            backgroundImage: `url(${image})`
+            backgroundImage: `url(${getImage(image)})`
         }">
             <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
                 style="height: 100%;z-index: 1;">
                 <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false"
-                    @error="onError" :src="image" use-loading-slot>
+                    @error="onError" :src="getImage(image)" use-loading-slot>
                     <template #loading>
                         <van-loading color="#1989fa" />
                     </template>
@@ -73,7 +73,7 @@ import { shallowRef, toRaw, unref } from 'vue';
 import getLastName from "@/utils/getLastName";
 import {randomInt} from "@/utils/randomInt.js"
 import lastImage from '@/static/last.jpg';
-
+import getImage from "./js/getImage"
 export default {
     components: {
         RankItem
@@ -182,7 +182,8 @@ export default {
             onClick,
             listRef,
             getLastName,
-            image
+            image,
+            getImage
         }
     },
 }
