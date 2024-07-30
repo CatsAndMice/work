@@ -42,7 +42,12 @@
             <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
                 {{ selfUser.user_name + '(我)' || '' }}
                 <template #right>
-                    <van-button @click="onClick" round class="rounded-full bg-white flex" type="info" size="small">
+                    <van-button v-if="selfUser.avatar" @click="onClick" round class="rounded-full bg-white flex"
+                        type="info" size="small">
+                        测一测
+                    </van-button>
+                    <van-button v-else open-type="chooseAvatar" @chooseavatar="onChooseAvatar($event, getUserInfoFn)"
+                        round class="rounded-full bg-white flex" type="info" size="small">
                         测一测
                     </van-button>
                 </template>
@@ -54,10 +59,20 @@
             :is-divider="!eq(listRef.length - 1, index)" @rank-click="onRankClick" />
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
-    <van-button @click="onClick" round icon="records"
-        class="fixed right-4 bottom-10 rounded-full bg-white flex justify-center items-center" type="info">
-        测一测
-    </van-button>
+
+    <template v-if="!isEmpty(selfUser)">
+        <van-button v-if="selfUser.avatar" @click="onClick" round icon="records"
+            class="fixed right-4 bottom-10 rounded-full bg-white flex justify-center items-center" type="info">
+            测一测
+        </van-button>
+
+        <van-button v-else open-type="chooseAvatar" @chooseavatar="onChooseAvatar($event, getUserInfoFn)" round
+            icon="records" class="fixed right-4 bottom-10 rounded-full bg-white flex justify-center items-center"
+            type="info">
+            测一测
+        </van-button>
+    </template>
+
 </template>
 <script>
 import RankItem from '@/components/RankItem.vue';
@@ -71,9 +86,10 @@ import { eq, isEmpty, gte, isUndefined } from "lodash-es"
 import images from "@/utils/images.json"
 import { shallowRef, toRaw, unref } from 'vue';
 import getLastName from "@/utils/getLastName";
-import {randomInt} from "@/utils/randomInt.js"
+import { randomInt } from "@/utils/randomInt.js"
 import lastImage from '@/static/last.jpg';
 import getImage from "./js/getImage"
+import onChooseAvatar from "./js/onChooseAvatar"
 export default {
     components: {
         RankItem
@@ -105,23 +121,25 @@ export default {
             return `${year}年${month}月${day}日`
         }
 
+        const getUserInfoFn = async () => {
+            const data = Cache.get('openId')
+            const [userErr, userInfo = {}] = await to(getUserInfo(data.openId))
+            if (!isUndefined(userInfo.result)) {
+                const work = unref(listRef).find(l => {
+                    return gte(userInfo.result, l.result)
+                })
+                userInfo.ranking = work.ranking
+            }
+            selfUser.value = userInfo
+            Cache.set('userInfo', {
+                ...userInfo,
+                openId: data.openId
+            })
+        }
+
         onLoad(() => {
             uni.$off('updateWorkRanking')
-            const getUserInfoFn = async () => {
-                const data = Cache.get('openId')
-                const [userErr, userInfo = {}] = await to(getUserInfo(data.openId))
-                if (!isUndefined(userInfo.result)) {
-                    const work = unref(listRef).find(l => {
-                        return gte(userInfo.result, l.result)
-                    })
-                    userInfo.ranking = work.ranking
-                }
-                selfUser.value = userInfo
-                Cache.set('userInfo', {
-                    ...userInfo,
-                    openId: data.openId
-                })
-            }
+
             uni.$on('updateWorkRanking', () => getList(null, getUserInfoFn))
             getList(null, () => {
                 uni.login({
@@ -183,7 +201,9 @@ export default {
             listRef,
             getLastName,
             image,
-            getImage
+            getImage,
+            onChooseAvatar,
+            getUserInfoFn
         }
     },
 }

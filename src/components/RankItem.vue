@@ -9,7 +9,7 @@
             <view class="flex items-center grow">
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
                     style="width: 76rpx;height: 76rpx;">
-                    <van-image v-if="userWorkInfo.avatar" width="72rpx" lazy-load height="72rpx" fit="cover"
+                    <van-image v-if="userWorkInfo.avatar" width="76rpx" lazy-load height="76rpx" style="height: 76rpx;" fit="cover"
                         :src="userWorkInfo.avatar" />
                     <view v-else class="text-center text-white "
                         style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">

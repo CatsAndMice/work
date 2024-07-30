@@ -17,3 +17,12 @@ export const getUserInfo = async (openId) => {
     }
     return null
 }
+
+
+export const updateUserInfo = async (params) => {
+    const [err, data] = await to(request.put('/api/wechat/info', params))
+    if (data && eq(data.code, 200)) {
+        return true
+    }
+    return false
+}

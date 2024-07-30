@@ -18,7 +18,7 @@
                 <view class="pb-4 mr-4 text-white text-xl">{{ userDetail.user_name }}</view>
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
                     style="width: 100rpx;height: 100rpx;">
-                    <van-image v-if="userDetail.avatar" width="100rpx" lazy-load height="100rpx" fit="cover"
+                    <van-image v-if="userDetail.avatar" width="100rpx" lazy-load height="100rpx" style="height: 100rpx;" fit="cover"
                         :src="userDetail.avatar" />
                     <view v-else class="text-center text-white "
                         style="width:100rpx;height:100rpx;line-height: 100rpx;background-color: rgb(51, 150, 251);">
