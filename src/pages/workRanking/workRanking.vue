@@ -95,6 +95,11 @@ export default {
         RankItem
     },
     setup() {
+        // 加载视频广告位
+        const RewardedVideoAd = wx.createRewardedVideoAd({
+            adUnitId: 'adunit-080cee334141f019'
+        })
+        RewardedVideoAd.load()
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
         const isLoadingHeader = shallowRef(true)
@@ -174,11 +179,17 @@ export default {
         }
 
         const onRankClick = (userDetail) => {
-            const rowUserDetail = toRaw(userDetail)
-            Cache.set('userDetail', rowUserDetail)
-            uni.navigateTo({
-                url: `/pages/workDetail/workDetail`
+            //展示视频广告
+            RewardedVideoAd.show()
+            //监听用户点击 关闭广告 按钮的事件
+            RewardedVideoAd.onClose(() => {
+                const rowUserDetail = toRaw(userDetail)
+                Cache.set('userDetail', rowUserDetail)
+                uni.navigateTo({
+                    url: `/pages/workDetail/workDetail`
+                })
             })
+
         }
 
         const onError = () => {
