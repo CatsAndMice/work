@@ -1,71 +1,75 @@
 <template>
     <view class="w-screen min-h-screen pb-4 relative bg-white">
-        <view v-show="loading" class="absolute w-screen flex justify-center items-center bg-white"
+        <view v-if="loading" class="absolute w-screen flex justify-center items-center bg-white"
             style="height: 100%;z-index: 1;">
             <van-loading color="#1989fa" size="24px" vertical>
                 <text style="color:#1989fa;">加载中...</text>
             </van-loading>
         </view>
-        <view v-show="!isEmpty(firstUser)" class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
+        <template v-else>
+            <view v-show="!isEmpty(firstUser)" class="h-60 bg-center bg-cover bg-no-repeat relative" :style="{
             backgroundImage: `url(${getImage(image)})`
         }">
-            <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
-                style="height: 100%;z-index: 1;">
-                <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false"
-                    @error="onError" :src="getImage(image)" use-loading-slot>
-                    <template #loading>
-                        <van-loading color="#1989fa" />
-                    </template>
-                </van-image>
-            </view>
-
-            <view class="text-white font-semibold text-xl p-4 pb-2">{{ getYmd() }}</view>
-            <view class="text-white pl-4">
-                <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center">
-                    <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" fit="cover"
-                        :src="firstUser.avatar">
+                <view v-show="isLoadingHeader" class="absolute w-screen flex justify-center items-center bg-white"
+                    style="height: 100%;z-index: 1;">
+                    <van-image width="100vw" height="15rem" fit="cover" :webp="true" @load="isLoadingHeader = false"
+                        @error="onError" :src="getImage(image)" use-loading-slot>
+                        <template #loading>
+                            <van-loading color="#1989fa" />
+                        </template>
                     </van-image>
-                    <view v-else class="text-center text-white "
-                        style="width:60rpx;height:60rpx;line-height: 60rpx;background-color: rgb(51, 150, 251);">
-                        {{ getLastName(firstUser.user_name) }}
-                    </view>
                 </view>
-                <text class="ml-2">{{ firstUser.user_name }}占领了封面</text>
-            </view>
-        </view>
-        <!-- 本人 -->
-        <view v-show="!isEmpty(selfUser)">
-            <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false"
-                @rank-click="onRankClick">
-                {{ selfUser.user_name + '(我)' || '' }}
-                <template #index>
-                    <view class="rank-num text-white text-center mr-2"
-                        style="font-size: 40rpx;width: 52rpx;height: 52rpx;">
-                        😩
-                    </view>
-                </template>
-            </rank-item>
 
-            <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
-                {{ selfUser.user_name + '(我)' || '' }}
-                <template #right>
-                    <van-button v-if="selfUser.avatar" @click="onClick" round class="rounded-full bg-white flex"
-                        type="info" size="small">
-                        测一测
-                    </van-button>
-                    <van-button v-else open-type="chooseAvatar" @chooseavatar="onChooseAvatar($event, getUserInfoFn)"
-                        round class="rounded-full bg-white flex" type="info" size="small">
-                        测一测
-                    </van-button>
-                </template>
-            </rank-item>
-            <view class="h-4" style="background-color: #fafafa;"></view>
-        </view>
-        <rank-item v-for="(list, index) in listRef" :index="list.ranking" :key="list.open_id" :user-work-info="list"
-            :is-divider="!eq(listRef.length - 1, index)" @rank-click="onRankClick" />
-        <view class="px-12"> <van-divider v-if="!isEmpty(listRef) && gte(listRef.length, MAX_COUNT)"
-                contentPosition="center">仅展示前100位</van-divider></view>
-        <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
+                <view class="text-white font-semibold text-xl p-4 pb-2">{{ getYmd() }}</view>
+                <view class="text-white pl-4">
+                    <view
+                        class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center">
+                        <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" fit="cover"
+                            :src="firstUser.avatar">
+                        </van-image>
+                        <view v-else class="text-center text-white "
+                            style="width:60rpx;height:60rpx;line-height: 60rpx;background-color: rgb(51, 150, 251);">
+                            {{ getLastName(firstUser.user_name) }}
+                        </view>
+                    </view>
+                    <text class="ml-2">{{ firstUser.user_name }}占领了封面</text>
+                </view>
+            </view>
+            <!-- 本人 -->
+            <view v-show="!isEmpty(selfUser)">
+                <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser"
+                    :is-divider="false" @rank-click="onRankClick">
+                    {{ selfUser.user_name + '(我)' || '' }}
+                    <template #index>
+                        <view class="rank-num text-white text-center mr-2"
+                            style="font-size: 40rpx;width: 52rpx;height: 52rpx;">
+                            😩
+                        </view>
+                    </template>
+                </rank-item>
+
+                <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
+                    {{ selfUser.user_name + '(我)' || '' }}
+                    <template #right>
+                        <van-button v-if="selfUser.avatar" @click="onClick" round class="rounded-full bg-white flex"
+                            type="info" size="small">
+                            测一测
+                        </van-button>
+                        <van-button v-else open-type="chooseAvatar"
+                            @chooseavatar="onChooseAvatar($event, getUserInfoFn)" round
+                            class="rounded-full bg-white flex" type="info" size="small">
+                            测一测
+                        </van-button>
+                    </template>
+                </rank-item>
+                <view class="h-4" style="background-color: #fafafa;"></view>
+            </view>
+            <rank-item v-for="(list, index) in listRef" :index="list.ranking" :key="list.open_id" :user-work-info="list"
+                :is-divider="!eq(listRef.length - 1, index)" @rank-click="onRankClick" />
+            <view class="px-12"> <van-divider v-if="!isEmpty(listRef) && gte(listRef.length, MAX_COUNT)"
+                    contentPosition="center">仅展示前100位</van-divider></view>
+            <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
+        </template>
     </view>
 
     <template v-if="!isEmpty(selfUser)">
@@ -80,6 +84,8 @@
             测一测
         </van-button>
     </template>
+
+
 
 </template>
 <script>
