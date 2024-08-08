@@ -38,7 +38,14 @@
             <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false"
                 @rank-click="onRankClick">
                 {{ selfUser.user_name + '(我)' || '' }}
+                <template #index>
+                    <view class="rank-num text-white text-center mr-2"
+                        style="font-size: 40rpx;width: 52rpx;height: 52rpx;">
+                        😩
+                    </view>
+                </template>
             </rank-item>
+
             <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
                 {{ selfUser.user_name + '(我)' || '' }}
                 <template #right>
@@ -54,9 +61,10 @@
             </rank-item>
             <view class="h-4" style="background-color: #fafafa;"></view>
         </view>
-
         <rank-item v-for="(list, index) in listRef" :index="list.ranking" :key="list.open_id" :user-work-info="list"
             :is-divider="!eq(listRef.length - 1, index)" @rank-click="onRankClick" />
+        <view class="px-12"> <van-divider v-if="!isEmpty(listRef) && gte(listRef.length, MAX_COUNT)"
+                contentPosition="center">仅展示前100位</van-divider></view>
         <van-empty v-if="!loading && isEmpty(listRef)" description="暂无数据" />
     </view>
 
@@ -95,11 +103,7 @@ export default {
         RankItem
     },
     setup() {
-        // 加载视频广告位
-        const RewardedVideoAd = wx.createRewardedVideoAd({
-            adUnitId: 'adunit-080cee334141f019'
-        })
-        RewardedVideoAd.load()
+        const MAX_COUNT = 100
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
         const isLoadingHeader = shallowRef(true)
@@ -133,8 +137,9 @@ export default {
                 const work = unref(listRef).find(l => {
                     return gte(userInfo.result, l.result)
                 })
-                userInfo.ranking = work.ranking
+                userInfo.ranking = work ? work.ranking : unref(listRef).length
             }
+            console.log(userInfo);
             selfUser.value = userInfo
             Cache.set('userInfo', {
                 ...userInfo,
@@ -180,15 +185,15 @@ export default {
 
         const onRankClick = (userDetail) => {
             //展示视频广告
-            RewardedVideoAd.show()
-            //监听用户点击 关闭广告 按钮的事件
-            RewardedVideoAd.onClose(() => {
-                const rowUserDetail = toRaw(userDetail)
-                Cache.set('userDetail', rowUserDetail)
-                uni.navigateTo({
-                    url: `/pages/workDetail/workDetail`
-                })
+            // RewardedVideoAd.show()
+            // //监听用户点击 关闭广告 按钮的事件
+            // RewardedVideoAd.onClose(() => {
+            const rowUserDetail = toRaw(userDetail)
+            Cache.set('userDetail', rowUserDetail)
+            uni.navigateTo({
+                url: `/pages/workDetail/workDetail`
             })
+            // })
 
         }
 
@@ -214,7 +219,9 @@ export default {
             image,
             getImage,
             onChooseAvatar,
-            getUserInfoFn
+            getUserInfoFn,
+            MAX_COUNT,
+            gte
         }
     },
 }

@@ -1,16 +1,19 @@
 <template>
     <view class="px-2 py-4 flex items-center justify-between bg-white rounded-lg  relative" @click="onClick">
-        <view class="rank-num text-white text-center mr-2" :class="{
+        <slot name="index">
+            <view class="rank-num text-white text-center mr-2" :class="{
         'first': index == 1,
         'second': index == 2,
         'third': index == 3
     }">{{ index }}</view>
+        </slot>
+
         <view class="grow flex items-center justify-between">
             <view class="flex items-center grow">
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
                     style="width: 76rpx;height: 76rpx;">
-                    <van-image v-if="userWorkInfo.avatar" width="76rpx" lazy-load height="76rpx" style="height: 76rpx;" fit="cover"
-                        :src="userWorkInfo.avatar" />
+                    <van-image v-if="userWorkInfo.avatar" width="76rpx" lazy-load height="76rpx" style="height: 76rpx;"
+                        fit="cover" :src="userWorkInfo.avatar" />
                     <view v-else class="text-center text-white "
                         style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">
                         {{ getLastName(userWorkInfo.user_name) }}
