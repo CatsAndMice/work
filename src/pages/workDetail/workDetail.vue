@@ -18,8 +18,8 @@
                 <view class="pb-4 mr-4 text-white text-xl">{{ userDetail.user_name }}</view>
                 <view class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center"
                     style="width: 100rpx;height: 100rpx;">
-                    <van-image v-if="userDetail.avatar" width="100rpx" lazy-load height="100rpx" style="height: 100rpx;" fit="cover"
-                        :src="userDetail.avatar" />
+                    <van-image v-if="userDetail.avatar" width="100rpx" lazy-load height="100rpx" style="height: 100rpx;"
+                        fit="cover" :src="userDetail.avatar" />
                     <view v-else class="text-center text-white "
                         style="width:100rpx;height:100rpx;line-height: 100rpx;background-color: rgb(51, 150, 251);">
                         {{ getLastName(userDetail.user_name) }}
@@ -32,8 +32,8 @@
                 <view class="flex items-center">
                     <van-icon name="flag-o" size="50rpx" class="mr-2" style="color: rgb(51, 150, 251); " />
                     <view class="flex items-center">
-                        <view v-if="userDetail.ranking > 100">未上榜😮‍💨</view>
-                        <view v-else>性价比排行第<text class="text-lg text-red-500 mx-1"> {{ userDetail.ranking }} </text>位
+                        <!-- <view v-if="userDetail.ranking > 100">未上榜😮‍💨</view> -->
+                        <view>性价比排行第<text class="text-lg text-red-500 mx-1"> {{ userDetail.ranking }} </text>位
                         </view>
                     </view>
                 </view>
@@ -143,18 +143,19 @@ import lastImage from '@/static/last.jpg';
 import images from "@/utils/images.json"
 import { randomInt } from "@/utils/randomInt.js"
 import { isEmpty, gte, eq, toNumber } from "lodash-es"
-import { shallowRef } from "vue"
+import { shallowRef, unref } from "vue"
 import { getResultMessage } from "@/pages/index/getResultMessage"
 import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes } from "@/pages/index/workEnvironment"
 import { getWorkExceed } from "@/api/work/work.js"
 import { onBeforeMount } from "vue"
 import { to } from "await-to-js";
-import getImage from "@/pages/workRanking/js/getImage"
+import getImage from "@/pages/workRanking/js/getImage";
+
 export default {
     setup() {
         const isLoadingHeader = shallowRef(true)
         const exceed = shallowRef(0)
-        const userDetail = Cache.get('userDetail') || {}
+        const userDetail = shallowRef(Cache.get('userDetail') || {})
         const image = shallowRef(images[randomInt(0, images.length - 1)])
         const getName = (array = [], key) => {
             const index = array.findIndex((item) => {
@@ -169,10 +170,15 @@ export default {
         }
 
         onBeforeMount(async () => {
-            if (!isEmpty(userDetail)) {
-                const [err, result] = await to(getWorkExceed(userDetail.result))
-                if (result) {
-                    exceed.value = eq(result, 100) ? 99.99 : result
+            const MAX = 100
+            const unrefUserDetail = unref(userDetail)
+            if (!isEmpty(unrefUserDetail)) {
+                const [err, result] = await to(getWorkExceed(unrefUserDetail.result))
+                if (!isEmpty(result)) {
+                    exceed.value = eq(result.exceed, MAX) ? 99.99 : result.exceed
+                    if (gte(toNumber(result.ranking), MAX)) {
+                        userDetail.value.ranking = result.ranking
+                    }
                 }
             }
         })
