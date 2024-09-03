@@ -24,29 +24,36 @@
                 <view class="text-white pl-4 inline-flex items-center">
                     <view
                         class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center">
-                        <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" style="height: 60rpx;" fit="cover"
-                            :src="firstUser.avatar">
+                        <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx"
+                            style="height: 60rpx;" fit="cover" :src="firstUser.avatar">
                         </van-image>
                         <view v-else class="text-center text-white "
                             style="width:60rpx;height:60rpx;line-height: 60rpx;background-color: rgb(51, 150, 251);">
                             {{ getLastName(firstUser.user_name) }}
                         </view>
                     </view>
-                    <text class="ml-2" >{{ firstUser.user_name }}占领了封面</text>
+                    <text class="ml-2">{{ firstUser.user_name }}占领了封面</text>
                 </view>
             </view>
             <!-- 本人 -->
             <view v-show="!isEmpty(selfUser)">
-                <rank-item v-if="selfUser.isTest" :index="selfUser.ranking" :user-work-info="selfUser"
-                    :is-divider="false" @rank-click="onRankClick">
-                    {{ selfUser.user_name + '(我)' || '' }}
-                    <template #index>
-                        <view class="rank-num text-white text-center mr-2"
-                            style="font-size: 40rpx;width: 52rpx;height: 52rpx;">
-                            😩
-                        </view>
-                    </template>
-                </rank-item>
+                <template v-if="selfUser.isTest">
+                    <rank-item v-if="selfUser.ranking > 100" :index="selfUser.ranking" :user-work-info="selfUser"
+                        :is-divider="false" @rank-click="onRankClick">
+                        {{ selfUser.user_name + '(我)' || '' }}
+                        <template #index>
+                            <view class="rank-num text-white text-center mr-2"
+                                style="font-size: 40rpx;width: 52rpx;height: 52rpx;">
+                                😩
+                            </view>
+                        </template>
+                    </rank-item>
+                    <rank-item v-else :index="selfUser.ranking" :user-work-info="selfUser" :is-divider="false"
+                        @rank-click="onRankClick">
+                        {{ selfUser.user_name + '(我)' || '' }}
+                    </rank-item>
+                </template>
+
 
                 <rank-item v-else index="无" :user-work-info="selfUser" :is-divider="false" :is-click="false">
                     {{ selfUser.user_name + '(我)' || '' }}
