@@ -21,10 +21,10 @@
                 </view>
 
                 <view class="text-white font-semibold text-xl p-4 pb-2">{{ getYmd() }}</view>
-                <view class="text-white pl-4">
+                <view class="text-white pl-4 inline-flex items-center">
                     <view
                         class="relative border-solid rounded-lg overflow-hidden inline-flex justify-center items-center">
-                        <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" fit="cover"
+                        <van-image v-if="firstUser.avatar" width="60rpx" :webp="true" height="60rpx" style="height: 60rpx;" fit="cover"
                             :src="firstUser.avatar">
                         </van-image>
                         <view v-else class="text-center text-white "
@@ -32,7 +32,7 @@
                             {{ getLastName(firstUser.user_name) }}
                         </view>
                     </view>
-                    <text class="ml-2">{{ firstUser.user_name }}占领了封面</text>
+                    <text class="ml-2" >{{ firstUser.user_name }}占领了封面</text>
                 </view>
             </view>
             <!-- 本人 -->

@@ -14,7 +14,7 @@
                     style="width: 76rpx;height: 76rpx;">
                     <van-image v-if="userWorkInfo.avatar" width="76rpx" lazy-load height="76rpx" style="height: 76rpx;"
                         fit="cover" :src="userWorkInfo.avatar" />
-                    <view v-else class="text-center text-white "
+                    <view v-else class="text-center text-white"
                         style="width:72rpx;height:72rpx;line-height: 72rpx;background-color: rgb(51, 150, 251);">
                         {{ getLastName(userWorkInfo.user_name) }}
                     </view>
