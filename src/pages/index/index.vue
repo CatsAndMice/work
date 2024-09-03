@@ -20,26 +20,29 @@
         <view>
           <view class="py-2 text-sm text-slate-600">平均日薪</view>
           <van-field :value="work.averageDailyFirewood" @input="work.averageDailyFirewood = $event.detail"
-            placeholder="计算公式：月薪/工作日" custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;"
-            :border="false" type="digit" />
+            @blur="onCheckAverageDailyFirewood" placeholder="计算公式：月薪/工作日"
+            custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;" :border="false" type="digit" />
         </view>
 
         <view>
           <view class="py-2 text-sm text-slate-600">工作时长</view>
           <van-field :value="work.workingHours" @input="work.workingHours = $event.detail" placeholder="计算公式：下班时间-上班时间"
-            custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;" :border="false" type="digit" />
+            @blur="onCheckWorkingHours" custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;"
+            :border="false" type="digit" />
         </view>
 
         <view>
           <view class="py-2 text-sm text-slate-600">通勤时长</view>
           <van-field :value="work.commuteLength" @input="work.commuteLength = $event.detail" placeholder="单位小时"
-            custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;" :border="false" type="digit" />
+            @blur="onCheckCommuteLength" custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;"
+            :border="false" type="digit" />
         </view>
 
         <view class="mb-3">
           <view class="py-2 text-sm text-slate-600">每天摸鱼时长(小时)</view>
           <van-field :value="work.hoursFish" @input="work.hoursFish = $event.detail" placeholder="不干活+吃饭+午休的时长"
-            custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;" :border="false" type="digit" />
+            @blur="onCheckHoursFish" custom-style="border:1px solid rgb(203 213 225);border-radius:0.5rem;"
+            :border="false" type="digit" />
         </view>
 
         <van-button type="info" @click="nextStep" custom-style="border-radius:0.5rem;" block>下一步</van-button>
@@ -164,7 +167,7 @@
 </template>
 <script>
 import { shallowRef, reactive, toRaw, unref, toRefs } from "vue"
-import { eq, each, isEmpty, toNumber } from "lodash-es"
+import { eq, each, isEmpty, toNumber, gt, lt } from "lodash-es"
 import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes } from "./workEnvironment"
 import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
@@ -172,6 +175,7 @@ import { getResultMessage } from "./getResultMessage"
 import { computedWork } from "@/api/work/work.js"
 import equationImage from '../../static/equation.png'
 import { to } from "await-to-js"
+
 const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
 const WORK_EARNINGS = 'WORK_EARNINGS',
   START = 'START',
@@ -200,11 +204,53 @@ export default {
     const type = shallowRef(unref(typeProp))
     const result = shallowRef(toNumber(unref(resultProp)))
     const work = reactive({
-      averageDailyFirewood: '',
-      workingHours: '',
-      commuteLength: '',
-      hoursFish: ''
+      averageDailyFirewood: '150',
+      workingHours: '8',
+      commuteLength: '1',
+      hoursFish: '1'
     })
+
+    const onCheckAverageDailyFirewood = (event) => {
+      const averageDailyFirewood = toNumber(event.detail.value)
+      if (gt(averageDailyFirewood, 1000)) {
+        work.averageDailyFirewood = '1000'
+        return
+      }
+
+      if (lt(averageDailyFirewood, 50)) {
+        work.averageDailyFirewood = '50'
+        return
+      }
+    }
+
+    const onCheckWorkingHours = (event) => {
+      const workingHours = toNumber(event.detail.value)
+      if (gt(workingHours, 14)) {
+        work.workingHours = '14'
+        return
+      }
+
+      if (lt(workingHours, 8)) {
+        work.workingHours = '8'
+        return
+      }
+    }
+
+    const onCheckCommuteLength = (event) => {
+      const commuteLength = toNumber(event.detail.value)
+      if (gt(commuteLength, 2)) {
+        work.commuteLength = '2'
+        return
+      }
+    }
+
+    const onCheckHoursFish = (event) => {
+      const hoursFish = toNumber(event.detail.value)
+      if (gt(hoursFish, 4)) {
+        work.hoursFish = '4'
+        return
+      }
+    }
 
     // 选择学历
     const { selectName, selectValue, show, select, open, close } = useActionSheet(qualifications)
@@ -293,6 +339,10 @@ export default {
     }
 
     return {
+      onCheckHoursFish,
+      onCheckCommuteLength,
+      onCheckWorkingHours,
+      onCheckAverageDailyFirewood,
       equationImage,
       chooseavatar,
       onShareTimeline,
