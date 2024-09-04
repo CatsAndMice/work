@@ -274,24 +274,23 @@ export default {
     }
 
     const nextStep = async () => {
-      await nextTick()
-      const rawWork = toRaw(work)
-      console.log(rawWork);
-      
-      let isPass = true
-      each(notifyConfig, (value, key) => {
-        if (!isPass) return
-        if (isEmpty(rawWork[key])) {
-          isPass = false
-          Notify({
-            message: value,
-            type: 'warning',
-          });
+      setTimeout(() => {
+        const rawWork = toRaw(work)
+        let isPass = true
+        each(notifyConfig, (value, key) => {
+          if (!isPass) return
+          if (isEmpty(rawWork[key])) {
+            isPass = false
+            Notify({
+              message: value,
+              type: 'warning',
+            });
+          }
+        })
+        if (isPass) {
+          type.value = WORK_ENVIRONMENT
         }
-      })
-      if (isPass) {
-        type.value = WORK_ENVIRONMENT
-      }
+      }, 200)
     }
 
     const predStep = () => {
