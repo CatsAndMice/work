@@ -92,8 +92,7 @@
         </van-button>
     </template>
 
-
-
+    <van-dialog id="van-dialog" confirmButton-color="#1989fa"/>
 </template>
 <script>
 import RankItem from '@/components/RankItem.vue';
@@ -110,17 +109,21 @@ import getLastName from "@/utils/getLastName";
 import { randomInt } from "@/utils/randomInt.js"
 import lastImage from '@/static/last.jpg';
 import getImage from "./js/getImage"
-import onChooseAvatar from "./js/onChooseAvatar"
+import onChooseAvatar from "./js/onChooseAvatar";
+
+const { default: Dialog } = require('../../wxcomponents/vant/dialog/dialog.js');
 export default {
     components: {
         RankItem
     },
     setup() {
+        let videoAd = null
         const MAX_COUNT = 100
         const firstUser = shallowRef({})
         const selfUser = shallowRef({})
         const isLoadingHeader = shallowRef(true)
         const image = shallowRef(images[randomInt(0, images.length - 1)])
+
         const { loading,
             listRef,
             getList } = useList(null, async () => {
@@ -160,26 +163,6 @@ export default {
             })
         }
 
-        onLoad(() => {
-            uni.$off('updateWorkRanking')
-
-            uni.$on('updateWorkRanking', () => getList(null, getUserInfoFn))
-            getList(null, () => {
-                uni.login({
-                    provider: 'weixin', //使用微信登录
-                    success: async function (loginRes) {
-                        const [err, data] = await to(login({ code: loginRes.code }))
-                        if (data) {
-                            Cache.set('openId', {
-                                openId: data.openid
-                            })
-                            getUserInfoFn()
-                        }
-                    }
-                });
-            })
-        })
-
         const onShareAppMessage = () => {
             let path = 'pages/workRanking/workRanking'
             return {
@@ -197,23 +180,67 @@ export default {
         }
 
         const onRankClick = (userDetail) => {
-            //展示视频广告
-            // RewardedVideoAd.show()
-            // //监听用户点击 关闭广告 按钮的事件
-            // RewardedVideoAd.onClose(() => {
-            const rowUserDetail = toRaw(userDetail)
-            Cache.set('userDetail', rowUserDetail)
-            uni.navigateTo({
-                url: `/pages/workDetail/workDetail`
-            })
-            // })
-
+            Dialog.confirm({
+                title: '温馨指示',
+                message: '请您先观看激励视频广告'
+            }).then(() => {
+                if (videoAd) {
+                    videoAd.onClose(res => {
+                        // 用户点击了【关闭广告】按钮
+                        if (res && res.isEnded) {
+                            const rowUserDetail = toRaw(userDetail)
+                            Cache.set('userDetail', rowUserDetail)
+                            uni.navigateTo({
+                                url: `/pages/workDetail/workDetail`
+                            })
+                        }
+                    })
+                    videoAd.show().catch(() => {
+                        // 失败重试
+                        videoAd.load()
+                            .then(() => videoAd.show())
+                            .catch(() => {
+                                console.error('激励视频 广告显示失败')
+                            })
+                    })
+                }
+            }).catch(() => {
+                console.error('取消激励视频广告')
+            });
         }
 
         const onError = () => {
             image.value = lastImage
             isLoadingHeader.value = false
         }
+
+        onLoad(() => {
+            if (wx.createRewardedVideoAd) {
+                videoAd = wx.createRewardedVideoAd({
+                    adUnitId: 'adunit-0e2871a513193ef3'
+                })
+                videoAd.onError((err) => {
+                    console.error('激励视频光告加载失败', err)
+                })
+            }
+            uni.$off('updateWorkRanking')
+            uni.$on('updateWorkRanking', () => getList(null, getUserInfoFn))
+            getList(null, () => {
+                uni.login({
+                    provider: 'weixin', //使用微信登录
+                    success: async function (loginRes) {
+                        const [err, data] = await to(login({ code: loginRes.code }))
+                        if (data) {
+                            Cache.set('openId', {
+                                openId: data.openid
+                            })
+                            getUserInfoFn()
+                        }
+                    }
+                });
+            })
+        })
+
         return {
             onRankClick,
             onError,
