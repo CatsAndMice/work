@@ -166,7 +166,7 @@
   </view>
 </template>
 <script>
-import { shallowRef, reactive, toRaw, unref, toRefs } from "vue"
+import { shallowRef, reactive, toRaw, unref, toRefs, nextTick } from "vue"
 import { eq, each, isEmpty, toNumber, gt, lt } from "lodash-es"
 import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes } from "./workEnvironment"
 import useActionSheet from "./useActionSheet"
@@ -273,9 +273,11 @@ export default {
       console.log(e.detail);
     }
 
-    const nextStep = () => {
+    const nextStep = async () => {
+      await nextTick()
       const rawWork = toRaw(work)
       console.log(rawWork);
+      
       let isPass = true
       each(notifyConfig, (value, key) => {
         if (!isPass) return
