@@ -124,57 +124,68 @@
         </view>
       </view>
     </block>
-    <block v-if="eq(type, LOOK_RESULT)">
+    <view v-if="eq(type, LOOK_RESULT)" class="px-2">
       <view class="text-center py-2 text-rose-600">请您分享给他(她)测测！</view>
-      <view class="py-2 bg-sky-200 text-center font-medium">工作性价比(计算参考)</view>
+      <view class="py-2 bg-sky-200 text-center font-medium border border-b-0 border-solid  border-slate-500">工作性价比(计算参考)</view>
       <view class="flex text-center justify-between relative items-center border-slate-500  border-t border-solid"
-        style="height: 30px;">
-        <view class="grow py-1">低于0.8</view>
+        style="height: 60rpx;">
+        <view class="grow py-1 border-l border-solid  border-slate-500">低于0.8</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
-        <view class="grow py-1">很惨!!</view>
+        <view class="grow py-1 border-r border-solid  border-slate-500">很惨!!</view>
       </view>
       <view class="flex text-center justify-between relative items-center border-slate-500  border-t border-solid"
-        style="height: 30px;">
-        <view class="grow py-1">高于1.5</view>
+        style="height: 60rpx;">
+        <view class="grow py-1 border-l border-solid  border-slate-500">高于1.5</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
-        <view class="grow py-1 ">很爽!!</view>
+        <view class="grow py-1 border-r border-solid  border-slate-500">很爽!!</view>
       </view>
       <view
         class="flex text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
-        style="height: 30px;">
-        <view class="grow py-1">高于2.0</view>
+        style="height: 60rpx;">
+        <view class="grow py-1 border-l border-solid  border-slate-500">高于2.0</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
-        <view class="grow py-1">爽到爆!!</view>
+        <view class="grow py-1 border-r border-solid  border-slate-500">爽到爆!!</view>
       </view>
 
-      <view class="py-2 bg-sky-200 mt-4 text-center font-medium ">本次工作性价比计算结果</view>
+      <view class="py-2 bg-sky-200 mt-4 text-center font-medium border border-b-0 border-solid  border-slate-500">本次工作性价比计算结果</view>
       <view
-        class=" flex text-lg text-center justify-between relative items-center border-slate-500  border-b border-t border-solid"
-        style="height: 30px;">
-        <view class="grow py-1 text-red-500">{{ result }}</view>
+        class="flex  text-center justify-between relative items-center border-slate-500 border-b border-t border-solid"
+        style="height: 60rpx;">
+        <view class="grow py-1 text-red-500 border-l border-solid  border-slate-500">{{ result }}</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
-        <view class="grow py-1 text-red-500">{{ getResultMessage(result) }}</view>
+        <view class="grow py-1 text-red-500 border-r border-solid  border-slate-500">{{ getResultMessage(result) }}</view>
       </view>
-      <view class="my-4">
-        <van-button type="info" custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);"
-          @click="predStep" block>再测一次</van-button>
+
+      <view class="flex my-4 ">
+        <van-button type="default" custom-style="border-radius:0.5rem;" @click="predStep">再测一次</van-button>
+        <view class="rounded-lg overflow-hidden ml-2 grow">
+          <van-button type="info" block open-type="share">分享给好友</van-button>
+        </view>
       </view>
-      <van-button open-type="share" type="default" block
-        custom-style="border-radius:0.5rem;margin:0 16px;width:calc(100% - 32px);">分享给好友</van-button>
-      <van-image fit="widthFix" show-menu-by-longpress width="100vw" class="pb-3" :src="equationImage" />
-    </block>
+
+      <view  class="pb-3" v-show="aiContent">
+        <view class="flex items-center">
+          <van-image fit="widthFix" show-menu-by-longpress width="40rpx" height="40rpx" style="height: 40rpx;"
+            :src="aiImage" />
+          <view class="ml-2 font-medium">Ai点评:</view>
+        </view>
+        <view class="mt-2 text-base pl-2 text-gray-600">{{ aiContent }}</view>
+      </view>
+    </view>
   </view>
 </template>
 <script>
-import { shallowRef, reactive, toRaw, unref, toRefs, nextTick } from "vue"
+import { shallowRef, reactive, toRaw, unref, toRefs } from "vue"
 import { eq, each, isEmpty, toNumber, gt, lt } from "lodash-es"
 import { qualifications, workEnv, oppositeSex, ditto, occupation, startWorkTimes } from "./workEnvironment"
 import useActionSheet from "./useActionSheet"
 import { computeResult } from "./computeResult"
 import { getResultMessage } from "./getResultMessage"
 import { computedWork } from "@/api/work/work.js"
-import equationImage from '../../static/equation.png'
+import { getAiChat } from "@/api/chat/chat.js"
+import aiImage from '../../static/ai.png'
 import { to } from "await-to-js"
+
 
 const { default: Notify } = require('../../wxcomponents/vant/notify/notify.js')
 const WORK_EARNINGS = 'WORK_EARNINGS',
@@ -201,8 +212,10 @@ export default {
   },
   setup(props) {
     const { typeProp, resultProp } = toRefs(props)
-    const type = shallowRef(unref(typeProp))
+    const type = shallowRef(LOOK_RESULT)
     const result = shallowRef(toNumber(unref(resultProp)))
+    const aiContent = shallowRef('')
+
     const work = reactive({
       averageDailyFirewood: '150',
       workingHours: '8',
@@ -310,6 +323,9 @@ export default {
       result.value = computeResult(actionSheet)
       type.value = LOOK_RESULT
 
+      getAiChat({ ...actionSheet, result: unref(result) }, function (content) {
+        aiContent.value = content
+      })
       await to(computedWork({
         ...actionSheet,
         result: unref(result)
@@ -323,8 +339,8 @@ export default {
         path = `pages/index/index?resultProp=${unref(result)}&typeProp=${LOOK_RESULT}`
       }
       return {
-        title: '我的工作性价比是??,快来测试您的工作性价比吧!',
-        path
+        title: '快来测试您的工作性价比吧!',
+        path: 'pages/workRanking/workRanking'
       }
     }
 
@@ -334,17 +350,18 @@ export default {
         query = `pages/index/index?resultProp=${unref(result)}&typeProp=${LOOK_RESULT}`
       }
       return {
-        title: '我的工作性价比是??,快来测试您的工作性价比吧!',
-        query
+        title: '快来测试您的工作性价比吧!',
+        query: 'pages/workRanking/workRanking'
       }
     }
 
     return {
+      aiContent,
       onCheckHoursFish,
       onCheckCommuteLength,
       onCheckWorkingHours,
       onCheckAverageDailyFirewood,
-      equationImage,
+      aiImage,
       chooseavatar,
       onShareTimeline,
       onShareAppMessage,
