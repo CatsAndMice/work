@@ -5,7 +5,10 @@ export const computedWork = async (params) => {
    const userInfo = Cache.get('userInfo')
    params.openId = userInfo.openId
    const data = await request.post('/api/wechat/work', params)
-   return data
+   if (data && eq(data.code, 200)) {
+      return true
+   }
+   return false
 }
 
 export const getWorkRanking = async () => {

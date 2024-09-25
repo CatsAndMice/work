@@ -126,7 +126,8 @@
     </block>
     <view v-if="eq(type, LOOK_RESULT)" class="px-2">
       <view class="text-center py-2 text-rose-600">请您分享给他(她)测测！</view>
-      <view class="py-2 bg-sky-200 text-center font-medium border border-b-0 border-solid  border-slate-500">工作性价比(计算参考)</view>
+      <view class="py-2 bg-sky-200 text-center font-medium border border-b-0 border-solid  border-slate-500">工作性价比(计算参考)
+      </view>
       <view class="flex text-center justify-between relative items-center border-slate-500  border-t border-solid"
         style="height: 60rpx;">
         <view class="grow py-1 border-l border-solid  border-slate-500">低于0.8</view>
@@ -147,13 +148,15 @@
         <view class="grow py-1 border-r border-solid  border-slate-500">爽到爆!!</view>
       </view>
 
-      <view class="py-2 bg-sky-200 mt-4 text-center font-medium border border-b-0 border-solid  border-slate-500">本次工作性价比计算结果</view>
+      <view class="py-2 bg-sky-200 mt-4 text-center font-medium border border-b-0 border-solid  border-slate-500">
+        本次工作性价比计算结果</view>
       <view
         class="flex  text-center justify-between relative items-center border-slate-500 border-b border-t border-solid"
         style="height: 60rpx;">
         <view class="grow py-1 text-red-500 border-l border-solid  border-slate-500">{{ result }}</view>
         <view class="h-full w-px bg-slate-500 absolute top-0 right-2/4"></view>
-        <view class="grow py-1 text-red-500 border-r border-solid  border-slate-500">{{ getResultMessage(result) }}</view>
+        <view class="grow py-1 text-red-500 border-r border-solid  border-slate-500">{{ getResultMessage(result) }}
+        </view>
       </view>
 
       <view class="flex my-4 ">
@@ -163,7 +166,7 @@
         </view>
       </view>
 
-      <view  class="pb-3" v-show="aiContent">
+      <view class="pb-3" v-show="aiContent">
         <view class="flex items-center">
           <van-image fit="widthFix" show-menu-by-longpress width="40rpx" height="40rpx" style="height: 40rpx;"
             :src="aiImage" />
@@ -321,15 +324,21 @@ export default {
         startWorkTime: unref(startWorkTimeSelectValue)
       }
       result.value = computeResult(actionSheet)
+
       type.value = LOOK_RESULT
 
-      getAiChat({ ...actionSheet, result: unref(result) }, function (content) {
-        aiContent.value = content
-      })
-      await to(computedWork({
+      const [err, isSuccess] = await to(computedWork({
         ...actionSheet,
         result: unref(result)
       }))
+
+      if (isSuccess) {
+        // TODO:持久化存储
+        getAiChat({ ...actionSheet, result: unref(result) }, function (content) {
+          aiContent.value = content
+        })
+      }
+
       uni.$emit('updateWorkRanking')
     }
 
