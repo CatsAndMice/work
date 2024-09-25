@@ -106,7 +106,6 @@
                     </view>
                     <!-- 右侧 -->
                     <view class="flex flex-col">
-
                         <view class="flex items-center text-sm  my-3">
                             <view class="text-slate-400">工作环境</view>
                             <view class="ml-2 flex items-center">
@@ -131,6 +130,17 @@
                 </view>
             </view>
 
+            <view v-show="userDetail.ai_chat" class="my-4 p-3 rounded shadow bg-white">
+                <view class="flex justify-between items-center">
+                    <view class="text-xl font-bold text-base flex items-center">
+                        <van-image fit="widthFix" width="40rpx" height="40rpx" style="height: 40rpx;" :src="aiImage" />
+                        <view class="ml-2">ai点评</view>
+                    </view>
+                </view>
+                <view class="flex justify-between mt-2">
+                    {{ userDetail.ai_chat }}
+                </view>
+            </view>
 
         </view>
         <van-empty v-else description="暂无数据" />
@@ -150,6 +160,7 @@ import { getWorkExceed } from "@/api/work/work.js"
 import { onBeforeMount } from "vue"
 import { to } from "await-to-js";
 import getImage from "@/pages/workRanking/js/getImage";
+import aiImage from '../../static/ai.png'
 
 export default {
     setup() {
@@ -184,6 +195,7 @@ export default {
         })
 
         return {
+            aiImage,
             workEnv,
             exceed,
             getName,

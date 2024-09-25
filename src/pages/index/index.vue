@@ -168,9 +168,9 @@
 
       <view class="pb-3" v-show="aiContent">
         <view class="flex items-center">
-          <van-image fit="widthFix" show-menu-by-longpress width="40rpx" height="40rpx" style="height: 40rpx;"
+          <van-image fit="widthFix"  width="40rpx" height="40rpx" style="height: 40rpx;"
             :src="aiImage" />
-          <view class="ml-2 font-medium">Ai点评:</view>
+          <view class="ml-2 font-medium">ai点评</view>
         </view>
         <view class="mt-2 text-base pl-2 text-gray-600">{{ aiContent }}</view>
       </view>
@@ -215,7 +215,7 @@ export default {
   },
   setup(props) {
     const { typeProp, resultProp } = toRefs(props)
-    const type = shallowRef(LOOK_RESULT)
+    const type = shallowRef(unref(typeProp))
     const result = shallowRef(toNumber(unref(resultProp)))
     const aiContent = shallowRef('')
 
@@ -231,7 +231,7 @@ export default {
       if (gt(averageDailyFirewood, 1000)) {
         work.averageDailyFirewood = '1000'
         return
-      }
+      } 
 
       if (lt(averageDailyFirewood, 50)) {
         work.averageDailyFirewood = '50'
