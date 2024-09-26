@@ -137,7 +137,7 @@
                         <view class="ml-2">ai点评</view>
                     </view>
                 </view>
-                <view class="flex justify-between mt-2">
+                <view class="flex justify-between mt-2 text-sm">
                     {{ userDetail.ai_chat }}
                 </view>
             </view>

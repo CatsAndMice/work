@@ -166,13 +166,16 @@
         </view>
       </view>
 
-      <view class="pb-3" v-show="aiContent">
+      <view class="pb-3">
         <view class="flex items-center">
-          <van-image fit="widthFix"  width="40rpx" height="40rpx" style="height: 40rpx;"
-            :src="aiImage" />
+          <van-image fit="widthFix" width="40rpx" height="40rpx" style="height: 40rpx;" :src="aiImage" />
           <view class="ml-2 font-medium">ai点评</view>
         </view>
-        <view class="mt-2 text-base pl-2 text-gray-600">{{ aiContent }}</view>
+        <view class="mt-2">
+          <van-skeleton row="3" :loading="!aiContent">
+            <view class="text-base pl-2 text-gray-600">{{ aiContent }}</view>
+          </van-skeleton>
+        </view>
       </view>
     </view>
   </view>
@@ -231,7 +234,7 @@ export default {
       if (gt(averageDailyFirewood, 1000)) {
         work.averageDailyFirewood = '1000'
         return
-      } 
+      }
 
       if (lt(averageDailyFirewood, 50)) {
         work.averageDailyFirewood = '50'
