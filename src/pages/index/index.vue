@@ -221,7 +221,6 @@ export default {
     const type = shallowRef(unref(typeProp))
     const result = shallowRef(toNumber(unref(resultProp)))
     const aiContent = shallowRef('')
-
     const work = reactive({
       averageDailyFirewood: '150',
       workingHours: '8',

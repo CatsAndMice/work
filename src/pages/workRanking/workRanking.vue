@@ -92,7 +92,7 @@
         </van-button>
     </template>
 
-    <van-dialog id="van-dialog" confirmButton-color="#1989fa"/>
+    <van-dialog id="van-dialog" confirmButton-color="#1989fa" />
 </template>
 <script>
 import RankItem from '@/components/RankItem.vue';
@@ -179,34 +179,45 @@ export default {
             }
         }
 
+        // let adCount = 0
+
         const onRankClick = (userDetail) => {
-            Dialog.confirm({
-                title: '温馨指示',
-                message: '请您先观看激励视频广告'
-            }).then(() => {
-                if (videoAd) {
-                    videoAd.onClose(res => {
-                        // 用户点击了【关闭广告】按钮
-                        if (res && res.isEnded) {
-                            const rowUserDetail = toRaw(userDetail)
-                            Cache.set('userDetail', rowUserDetail)
-                            uni.navigateTo({
-                                url: `/pages/workDetail/workDetail`
-                            })
-                        }
-                    })
-                    videoAd.show().catch(() => {
-                        // 失败重试
-                        videoAd.load()
-                            .then(() => videoAd.show())
-                            .catch(() => {
-                                console.error('激励视频 广告显示失败')
-                            })
-                    })
-                }
-            }).catch(() => {
-                console.error('取消激励视频广告')
-            });
+            // adCount++
+            // if (adCount > 2) {
+            //     Dialog.confirm({
+            //         title: '温馨指示',
+            //         message: '请您先观看激励视频广告'
+            //     }).then(() => {
+            //         if (videoAd) {
+            //             videoAd.onClose(res => {
+            //                 if (res && res.isEnded) {
+            //                     const rowUserDetail = toRaw(userDetail)
+            //                     Cache.set('userDetail', rowUserDetail)
+            //                     uni.navigateTo({
+            //                         url: `/pages/workDetail/workDetail`
+            //                     })
+            //                 }
+            //             })
+            //             videoAd.show().catch(() => {
+            //                 videoAd.load()
+            //                     .then(() => videoAd.show())
+            //                     .catch(() => {
+            //                         console.error('激励视频 广告显示失败')
+            //                     })
+            //             })
+            //         }
+            //     }).catch(() => {
+            //         console.error('取消激励视频广告')
+            //     })
+            //     adCount = 0 // 重置计数器
+            // } else {
+            // 直接跳转
+            const rowUserDetail = toRaw(userDetail)
+            Cache.set('userDetail', rowUserDetail)
+            uni.navigateTo({
+                url: `/pages/workDetail/workDetail`
+            })
+            // }
         }
 
         const onError = () => {

@@ -16,5 +16,7 @@ export default {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+page{
+  background-color: #f3f4f6;
+}
 </style>

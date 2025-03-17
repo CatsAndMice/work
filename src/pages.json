@@ -1,6 +1,30 @@
 {
 	"pages": [
 		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "职场导航",
+				"navigationBarBackgroundColor": "#397bee",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/recruitment/recruitment",
+			"style": {
+				"navigationBarTitleText": "招聘信息",
+				"navigationBarBackgroundColor": "#397bee",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/recruitDetail/recruitDetail",
+			"style": {
+				"navigationBarTitleText": "招聘详情",
+				"navigationBarBackgroundColor": "#397bee",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/workRanking/workRanking",
 			"style": {
 				"navigationBarTitleText": "工作性价比排行",
@@ -29,7 +53,7 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "这个b班上的值不值",
 		"navigationBarBackgroundColor": "#fff",
-		"backgroundColor": "#fff",
+		"backgroundColor": "#f3f4f6",
 		"usingComponents": {
 			"van-button": "/wxcomponents/vant/button/index",
 			"van-icon": "/wxcomponents/vant/icon/index",
